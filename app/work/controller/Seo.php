@@ -30,4 +30,7 @@ class Seo extends Controller
             $this->fetch();
         }
     }
+    public  function bb(){
+        echo 'aa';
+    }
 }
