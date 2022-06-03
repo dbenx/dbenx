@@ -1,0 +1,70 @@
+{extend name="../../admin/view/main"}
+{block name="button"}
+
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-open='{:url("add")}'>添加后辍</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-action='{:url("remove")}' data-value="id#0"
+        data-confirm="确定要删除这些删除吗？">清空数据
+</button>
+<!--{/if}-->
+{/block}
+
+{block name='content'}
+<div class="think-box-shadow">
+    <table id="Urlsuffix" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+</div>
+<script>
+    $(function () {
+        // 初始化表格组件
+        $('#Urlsuffix').layTable({
+            even: true, height: 'full',
+            sort: {field: 'sort desc,id', type: 'desc'},
+            cols: [[
+                {checkbox: true, },
+                {field: 'sort', title: '排序', align: 'center', width: 80, sort: true, templet: '#SortInputTpl'},
+                {field: 'title', title: '名称', align: 'center', width: 120},
+                {field: 'url', title: 'url', align: 'left', minWidth: 110 },
+                {field: 'content', title: '后辍', align: 'left', minWidth: 280},
+                {field: 'status', title: '公开状态', align: 'center', width: 110, templet: '#StatusSwitchTpl'},
+                {toolbar: '#toolbar', title: '操作面板', align: 'center', width: 200}
+            ]]
+        });
+
+        // 数据状态切换操作
+        layui.form.on('switch(StatusSwitch)', function (obj) {
+            $.form.load("{:url('state')}", {id: obj.value, status: obj.elem.checked > 0 ? 1 : 0}, 'post', function (ret) {
+                if (ret.code < 1) $.msg.error(ret.info, 3, function () {
+                    $('#RoleData').trigger('reload'); // 操作异常时重载数据
+                });
+                return false;
+            }, false);
+        });
+    });
+
+</script>
+<!-- 数据状态切换模板 -->
+<script type="text/html" id="StatusSwitchTpl">
+    <!--{if auth("state")}-->
+    <input type="checkbox" value="{{d.id}}" lay-skin="switch" lay-text="已公开|私有" lay-filter="StatusSwitch" {{d.status>0?'checked':''}}>
+    <!--{else}-->
+    {{d.status ? '<b class="color-green">已公开</b>' : '<b class="color-red">私有</b>'}}
+    <!--{/if}-->
+</script>
+<script type="text/html" id="toolbar">
+    <!--{if auth("add")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-primary" data-title="添加规则" data-modal='{:url("add")}?pid={{d.id}}'>添
+        加</a>
+    <!--{/if}-->
+    <!--{if auth("edit")}-->
+    <a data-dbclick class="layui-btn layui-btn-sm" data-title="编辑规则"
+       data-modal='{:url("edit")}?id={{d.id}}&pid={{d.pid}}'>编 辑</a>
+    <!--{/if}-->
+    <!--{if auth("remove")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要永久删除此规则吗？" data-action="{:url('remove')}" data-value="id#{{d.id}}">删 除</a>
+    <!--{/if}-->
+</script>
+
+{/block}

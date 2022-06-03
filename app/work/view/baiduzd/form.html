@@ -1,0 +1,26 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<form class="layui-form layui-card" action='{:url("insdata")}' data-auto="true" method="post" autocomplete="off">
+    <div class="layui-card-body padding-left-40">
+
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">知道链接</span>
+            <textarea class="layui-textarea" name="url" placeholder="知道链接" required  rows="20"></textarea>
+            <span class="help-block">多个链接，一行一个</span>
+        </label>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+    {notempty name='vo.id'}<input name='id' type='hidden' value='{$vo.id}'>{/notempty}
+</form>
+<script>
+    window.form.render();
+
+</script>
+{/block}

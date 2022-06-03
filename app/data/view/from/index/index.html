@@ -1,0 +1,72 @@
+{extend name='../../admin/view/table'}
+
+{block name="button"}
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-open='{:url("add")}'>添加信息</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-action='{:url("remove")}' data-confirm="确定要删除这些删除吗？" data-rule="id#{key}">删除信息</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-action='{:url("send")}' data-confirm="确定要重推送这些信息吗？" data-rule="id#{key}">重新推送</button>
+<!--{/if}-->
+
+{/block}
+
+{block name='content'}
+<div class="think-box-shadow">
+    {include file='from/index/index_search'}
+
+<table id="QueueData" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+{/block}
+</div>
+{block name='script'}
+<script>
+    $(function () {
+        $('#QueueData').layTable({
+            even: true,
+            sort: {field: 'id desc,code', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: 'left'},
+                {field: 'id', title: '编号', width: 70, sort: true,align: 'center',},
+                {field: 'name', title: '姓名', minWidth: 100},
+                {field: 'phone', title: '电话', minWidth: 120,align: 'center',},
+                {field: 'wechat', title: '微信', minWidth: 95},
+                {field: 'zhid', title: '账户', minWidth: 110,align: 'center'},
+                {field: 'source', title: '渠道', minWidth: 110,align: 'center'},
+                {field: 'url', title: '首次URL', minWidth: 260},
+                {field: 'create_time', title: '获取时间', align: 'center', minWidth: 160},
+                {field: 'create_at', title: '创建时间', align: 'center', minWidth: 160},
+                {field: 'status3', title: '3++推送结果', align: 'center', minWidth: 170},
+                {field: 'status9', title: '九枝兰推送结果', align: 'center', minWidth: 170},
+                {field: 'keywords', title: '关键词', align: 'center', minWidth: 170},
+                {field: 'address', title: '地址', align: 'center', minWidth: 170},
+                {toolbar: '#toolbar', title: '操作面板', align: 'center', width: 200, fixed: 'right',}
+            ]]
+        });
+    });
+</script>
+    <script type="text/html" id="toolbar">
+        <!--{if auth('edit')}-->
+        <a class='layui-badge layui-bg-blue'  data-open='{:url("edit")}?id={{d.id}}'>
+            编辑<i class="layui-icon font-s12">&#xe642;</i>
+        </a>
+        <!--{/if}-->
+
+        <!--{if auth('remove')}-->
+        <a class='layui-badge layui-bg-red' data-confirm="确定要删除该任务吗？" data-action='{:url("remove")}' data-value="id#{{d.id}}">
+            删除<i class="layui-icon font-s12">&#xe640;</i>
+        </a>
+        <!--{/if}-->
+
+        <!--{if auth("view")}-->
+        <a class='layui-badge layui-bg-orange margin-0' data-queue="{:url('view')}?id={{d.id}}" data-value="id#{{d.id}}">
+            查看<i class="layui-icon font-s12">&#xe705;</i>
+        </a>
+        <!--{/if}-->
+
+    </script>
+
+    {/block}

@@ -1,0 +1,25 @@
+<div class="layui-card-body padding-left-40">
+    <div class="layui-collapse" lay-accordion="">
+        {foreach $vo.content as $k=>$v}
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">{$v.ask}</h2>
+            <div class="layui-colla-content {if $k.'' eq 0}layui-show{/if}">
+                <p>{$v.content}</p>
+            </div>
+        </div>
+        {/foreach}
+    </div>
+
+</div>
+<script src="__ROOT__/static/plugs/layui/layui.js"></script>
+<script>
+    layui.use(['dropdown', 'util', 'layer'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+
+        //监听折叠
+        element.on('collapse(test)', function (data) {
+            layer.msg('展开状态：' + data.show);
+        });
+    });
+</script>

@@ -1,0 +1,92 @@
+{extend name="../../admin/view/main"}
+
+{block name="button"}
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-open='{:url("add")}'>添加工单</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-action='{:url("remove")}' data-confirm="确定要删除这些文章吗？" data-rule="id#{key}">删除工单</button>
+<!--{/if}-->
+{/block}
+
+{block name='content'}
+<div class="think-box-shadow">
+    {include file='order/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <label><input data-auto-none data-check-target='.list-check-box' type='checkbox'></label>
+            </th>
+            <th class='list-table-sort-td'>
+                <button class="layui-btn layui-btn-xs" data-reload type="button">刷 新</button>
+            </th>
+            <th class="text-left nowrap">工单编号</th>
+            <th class="text-left nowrap">工单名称</th>
+            <th class="text-left nowrap">工单描述</th>
+            <th class="text-left nowrap">物料模块</th>
+            <th class="text-left nowrap">紧急程度</th>
+            <th class="text-left nowrap">制作数量</th>
+            <th class="text-left nowrap">提交人</th>
+            <th class="text-left nowrap">制作人</th>
+            <th class="text-left nowrap">截止日期</th>
+            <th class="text-left nowrap">完成日期</th>
+            <th class="text-left nowrap">工单状态</th>
+            <th class="text-left nowrap">创建时间</th>
+            <th class="text-left nowrap"></th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td think-checkbox'>
+                <label><input class="list-check-box" type='checkbox' value='{$vo.id}'></label>
+            </td>
+            <td class='list-table-sort-td'>
+                <label><input class="list-sort-input" data-action-blur="{:request()->url()}" data-loading="false" data-value="id#{$vo.id};action#sort;sort#{value}" value="{$vo.sort}"></label>
+            </td>
+            <td class="text-left nowrap">{$vo.id|default=''}</td>
+            <td class="text-left nowrap">{$vo.title|default=''}</td>
+            <td class="text-left nowrap">{$vo.miaoshu|default=''}</td>
+            <td class="text-left nowrap">{$vo.module|default=''}</td>
+            <td class="text-left nowrap">
+                {if $vo.level eq 0}<span style="color: #2F4056">常规工单</span>{/if}
+                {if $vo.level eq 1}<span style="color: #01AAED">紧急工单</span>{/if}
+                {if $vo.level eq 2}<span style="color: #FF5722">特急工单</span>{/if}
+               </td>
+            <td class="text-left nowrap">{$vo.num|default='1'}</td>
+            <td class="text-left nowrap">{$vo.tjname|default=''}</td>
+            <td class="text-left nowrap">{$vo.zzname|default=''}</td>
+            <td class="text-left nowrap">{$vo.endtime|format_datetime='Y年m月d日'}</td>
+            <td class="text-left nowrap">{$vo.finishtime|default='未完成'}</td>
+            <td class="text-left nowrap">{if $vo.status eq 0}<span class="color-red">进行中</span>{elseif $vo.status eq 1}<span class="color-green">已完成</span>{/if}</td>
+            <td class="text-left nowrap">{$vo.create_at|format_datetime}</td>
+            <td class='text-left nowrap'>
+                <!--{if auth("edit")}-->
+                <a class="layui-btn layui-btn-sm" data-dbclick data-open="{:url('edit')}?id={$vo.id}" data-title="编辑工单">编 辑</a>
+                <!--{/if}-->
+
+                <!--{if auth("remove")}-->
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('remove')}" data-confirm="确定要删除该工单吗？" data-value="id#{$vo.id}">删 除</a>       <!--{/if}-->
+
+                <!--{if auth("view")}-->
+                <a class="layui-btn layui-btn-sm layui-btn-primary" data-dbclick data-open="{:url('view')}?id={$vo.id}" data-title="查看工单">详 情</a>
+                <!--{/if}-->
+
+                <!--{if auth("state") and $vo.status eq 1}-->
+                <a class="layui-btn layui-btn-sm layui-btn-normal" data-action="{:url('state')}" data-value="id#{$vo.id};status#0">未完成</a>
+                <!--{/if}-->
+                <!--{if auth("state") and $vo.status eq 0}-->
+                <a class="layui-btn layui-btn-sm layui-btn-warm" data-action="{:url('state')}" data-value="id#{$vo.id};status#1">已完成</a>
+                <!--{/if}-->
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}

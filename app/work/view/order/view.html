@@ -1,0 +1,82 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<div class="iframe-pagination think-box-shadow">
+    <ul class="layui-timeline">
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">工单基本信息</h3>
+                <ul>
+                    <li>提交人：{$vo.tjname}</li>
+                    <li>制作人：{$vo.zzname}</li>
+                    <li>
+                        紧急程度：
+                        {if $vo.level eq 0}<span style="color: #2F4056">常规工单</span>{/if}
+                        {if $vo.level eq 1}<span style="color: #01AAED">紧急工单</span>{/if}
+                        {if $vo.level eq 2}<span style="color: #FF5722">特急工单</span>{/if}</li>
+                    <li>制作数量：{$vo.num}</li>
+                    <li>物料模块：{$vo.module}</li>
+                    <li>截止日期：{$vo.endtime} <font color="red">  {$vo.day} </font></li>
+                </ul>
+            </div>
+        </li>
+
+
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">工单标题</h3>
+                <p>{$vo.title}</p>
+            </div>
+        </li>
+
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">工单描述</h3>
+                <p>{$vo.miaoshu}</p>
+            </div>
+        </li>
+
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">工单详细要求</h3>
+                <p>{$vo.content|raw}</p>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">完成工单提交见证性材料</h3>
+                <p>{$vo.scontent|raw}</p>
+             
+               
+            </div>
+        </li>
+        
+        <li class="layui-timeline-item">
+            <div class="layui-form-item text-center">
+        
+                {empty name='vo.view'}
+                <a class="layui-btn"  data-modal="{:url('send')}?id={$vo.id}" data-title="提交见证性材料">结束工单提交见证性材料</a>
+                {/empty}
+                <a class="layui-btn   layui-btn-danger" href="javascript:history.go(-1);">返 回 上 一 页</a>
+            </div>
+        </li>
+      
+    </ul>
+
+    
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    window.form.render();
+    require(['ckeditor'], function () {
+        window.createEditor('[name=content]', {height: 300});
+    });
+</script>
+{/block}

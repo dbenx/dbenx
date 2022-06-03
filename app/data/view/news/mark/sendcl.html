@@ -1,0 +1,37 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<form action="{:request()->url()}" autocomplete="off" class="layui-form layui-card" data-auto="true" method="post">
+    <div class="layui-card-body padding-40 padding-bottom-20">
+aaaaaa
+        <div class="layui-form-item relative block">
+            <span class="color-green font-w7 label-required-prev">工单详细说明</span>
+            <span class="color-desc margin-left-5">Order Content</span>
+            <label class="relative block">
+                <textarea class="layui-textarea" name="content" placeholder="工单详细说明">{$vo.content|default=''}</textarea>
+            </label>
+        </div>
+
+        <div class="hr-line-dashed"></div>
+        {notempty name='vo.id'}<input name='id' type='hidden' value='{$vo.id}'>{/notempty}
+        {notempty name='vo.code'}<input name='code' type='hidden' value='{$vo.code}'>{/notempty}
+
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" type="submit">保存数据</button>
+            <button class="layui-btn layui-btn-danger" data-history-back data-confirm="确定要取消编辑吗？" type='button'>取消编辑</button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    window.form.render();
+    laydate.render({
+        elem: '#endtime'
+        ,min: 0 //7天前
+    });
+    require(['ckeditor'], function () {
+        window.createEditor('[name=content]', {height: 300});
+    });
+</script>
+{/block}

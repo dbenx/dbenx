@@ -1,0 +1,36 @@
+<fieldset>
+    <legend>条件搜索</legend>
+    <form action="{:request()->url()}" autocomplete="off" class="layui-form layui-form-pane form-search" method="get" onsubmit="return false">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">单元名</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" name="danyuan" placeholder="请输入文章标题" value="{$get.danyuan|default=''}">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">搜索标签</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" name="mark" placeholder="请输入搜索标签" value="{$get.mark|default=''}">
+            </label>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">创建时间</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" data-date-range name="create_at" placeholder="请选择创建时间" value="{$get.create_at|default=''}">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+        <button type="button" data-form-export="{:request()->url()}" class="layui-btn layui-btn-primary">
+            <i class="layui-icon layui-icon-export"></i> 导 出
+        </button>
+        </div>
+    </form>
+
+</fieldset>
+<script>window.form.render()</script>

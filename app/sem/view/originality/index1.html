@@ -1,0 +1,238 @@
+{extend name="../../admin/view/main"}
+{block name='content'}
+<div class="think-box-shadow table-block">
+    <fieldset>
+        <legend>匹配规则</legend>
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn" onclick="view()">组合预览</button>
+            <button id="showSn" class="layui-btn layui-btn-primary" data-file data-type="xlsx,xls"
+                    data-uptype='local' data-field="topic_excel"><i class="layui-icon">&#xe655;</i>导出数据
+            </button>
+
+        </div>
+    </fieldset>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend class="font-s14">创意标题 常用连接符：<font color="red">+ 、 - / , 一一 ！ = 《》</font></legend>
+    </fieldset>
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md2">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">通配符关键词</span>
+                <span class="color-desc margin-left-5">Highlights Name</span>
+                <textarea class="layui-textarea" name="keyword1" id="keyword1" rows="6" placeholder="请输入关键词">{$keyword1|default=''}</textarea>
+            </label>
+        </div>
+        <div class="layui-col-md2">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">品牌关键词</span>
+                <span class="color-desc margin-left-5">Highlights Name1</span>
+                <textarea class="layui-textarea" name="keyword2" id="ppkw" rows="6" placeholder="请输入关键词">{$ppkw|default=''}</textarea>
+            </label>
+        </div>
+        <div class="layui-col-md2">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">卖点1</span>
+                <span class="color-desc margin-left-5">Highlights Name1</span>
+                <textarea class="layui-textarea" name="keyword2" id="keyword2" rows="6" placeholder="请输入关键词">{$keyword2|default=''}</textarea>
+            </label>
+        </div>
+        <div class="layui-col-md2">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">卖点2</span>
+                <span class="color-desc margin-left-5">Highlights Name1</span>
+                <textarea class="layui-textarea" name="keyword2" id="keyword3" rows="6" placeholder="请输入关键词">{$keyword3|default=''}</textarea>
+            </label>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">组合结果</span>
+                <span class="color-desc margin-left-5">Combination results</span>
+                <div class="layui-card-body" id="zhkeyword" style="height: 110px; padding: 5px; overflow-y: auto;">
+                    {$zhkeyword|default=''}
+                </div>
+            </label>
+
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend class="font-s14">创意描述</legend>
+    </fieldset>
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md6">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">描述1</span>
+                <span class="color-desc margin-left-5">Highlights Name</span>
+                <textarea class="layui-textarea" id="ms01" rows="4"
+                          placeholder="请输入关键词">{$ms01|default=''}</textarea>
+            </label>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">描述2</span>
+                <span class="color-desc margin-left-5">Highlights Name</span>
+                <textarea class="layui-textarea" id="ms02" rows="4"
+                          placeholder="请输入关键词">{$ms02|default=''}</textarea>
+            </label>
+        </div>
+        <div class="layui-col-md12">
+            <label class="layui-form-item relative block">
+                <span class="color-red font-w7">组合结果</span>
+                <span class="color-desc margin-left-5">Combination results</span>
+                <textarea class="layui-textarea" id="msall" rows="4"
+                          placeholder="请输入关键词">{$msall|default=''}</textarea>
+            </label>
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend class="font-s14">创意预览面板</legend>
+    </fieldset>
+    <table class="layui-table" lay-skin="line">
+        <colgroup>
+            <col width="150">
+            <col width="150">
+            <col width="200">
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>创意标题</th>
+            <th>创意描述1</th>
+            <th>创意描述2</th>
+        </tr>
+        </thead>
+        <tbody id="cy">
+        <tr><td>深圳新东方烹饪学校_【新东方】_34年品牌教育_最好的烹饪学校|57</th><td>成绩不好选什么技校好?【深圳新东方烹饪学校】专业齐全,入学签订就业协议,</td><td>学厨师,选职校来【深圳新东方烹饪学校】34年烹饪教育经验.</td></tr>
+        </tbody>
+    </table>
+</div>
+
+</div>
+
+
+{/block}
+
+{block name='script'}
+
+<script>
+    // layui 表单组件初始化
+    layui.form.render();
+    mszh();
+    zhuhe();
+    $('#keyword1').blur(function () {
+        $_cookie('keyword1', Text2Html($(this).val()))
+        zhuhe();
+    });
+    $('#keyword2').blur(function () {
+        $_cookie('keyword2', Text2Html($(this).val()))
+        zhuhe();
+    });
+    $('#keyword3').blur(function () {
+        $_cookie('keyword3', Text2Html($(this).val()))
+        zhuhe();
+    });
+    $('#ppkw').blur(function () {
+        $_cookie('ppkw', Text2Html($(this).val()))
+        zhuhe();
+    });
+    $('#ms01').blur(function () {
+        $_cookie('ms01', Text2Html($(this).val()))
+        mszh();
+    });
+    $('#ms02').blur(function () {
+        $_cookie('ms02', Text2Html($(this).val()))
+        mszh();
+    });
+    $('#msall').blur(function () {
+        $_cookie('msall', Text2Html($(this).val()))
+        mszh();
+    });
+
+    function view() {
+        let str='<tr><td>深圳新东方烹饪学校_【新东方】_34年品牌教育_最好的烹饪学校</th><td>成绩不好选什么技校好?【深圳新东方烹饪学校】专业齐全,入学签订就业协议,</td><td>学厨师,选职校来【深圳新东方烹饪学校】34年烹饪教育经验.</td></tr>';
+        let title=$("#zhkeyword").val();
+        let zy=$("")
+        $("#cy").html('')
+    }
+
+    function mszh() {
+        $('#msall').val('');
+        let ms = '';
+        var ms01 = $("#ms01").val().split('\n');
+        var ms02 = $("#ms02").val().split('\n');
+        for (j = 0, len = ms01.length; j < len; j++) {
+            for (i = 0; i < ms02.length; i++) {
+                if (ms != '') {
+                    ms = ms01[j] + ms02[i] + '\n' + ms;
+                } else {
+                    ms = ms01[j] + ms02[i] + '\n';
+                }
+            }
+        }
+        $('#msall').val(ms);
+    }
+
+    function zhuhe() {
+        let zh = '';
+        let temstr = '';
+        $('#zhkeyword').val('');
+        var keyword1 = $("#keyword1").val().split('\n');
+        var keyword2 = $("#keyword2").val().split('\n');
+        var keyword3 = $("#keyword3").val().split('\n');
+        var ppkw = $("#ppkw").val().split('\n');
+        for (j = 0, len = keyword1.length; j < len; j++) {
+            for (n = 0; n < ppkw.length; n++) {
+                for (k = 0; k < keyword2.length; k++) {
+                    for (l = 0; l < keyword3.length; l++) {
+                        temstr = keyword1[j] +'_'+ ppkw[n] +'_'+ keyword2[k] +'_'+ keyword3[l];
+                        temstr = temstr + '|' + getByteLen(temstr);
+                        if (zh != '') {
+                            zh = temstr + '<br>' + zh;
+                        } else {
+                            zh = temstr + '<br>';
+                        }
+                    }
+                }
+            }
+        }
+        $('#zhkeyword').html(zh);
+    }
+
+
+    function $_cookie(name, value) {
+        var date = new Date();
+        $livetime = 5 * 24 * 3600 * 1000;// cookie生命周期
+        date.setTime(date.getTime() + $livetime);
+        document.cookie = name + "=" + value + ";expires=" + date.toGMTString();
+    }
+
+    function cs() {
+        var str = Text2Html($('#keyword1').val())
+        $_cookie("param", str);
+    }
+
+    function Text2Html(str) {
+        if (str == null) {
+            return "";
+        }
+        str = str.replaceAll("\n", "-");
+        return str;
+    }
+
+    function getByteLen(val) {
+        var len = 0;
+        for (var i = 0; i < val.length; i++) {
+            var a = val.charAt(i);
+            if (a.match(/[^\x00-\xff]/ig) != null) {
+                len += 2;
+            } else {
+                len += 1;
+            }
+        }
+        if (val.indexOf("{") != -1) {
+            len -= 2;
+        }
+        return len;
+    }
+
+</script>
+{/block}

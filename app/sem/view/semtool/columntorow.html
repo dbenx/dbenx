@@ -1,0 +1,82 @@
+{extend name="../../admin/view/main"}
+{block name='content'}
+<div class="think-box-shadow table-block">
+    <fieldset>
+        <legend>操作面板</legend>
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary" onclick="view(true)">列变行</button>
+            <button class="layui-btn" onclick="view()">行变列</button>
+
+        </div>
+    </fieldset>
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md5">
+            <span class="color-red font-w7">词根-列</span>
+            <textarea class="layui-textarea" name="rootword" id="rootword" rows="20" placeholder="请输入词根"></textarea>
+        </div>
+        <div class="layui-col-md1">
+            <span class="color-red font-w7">连接符号</span>
+            <textarea class="layui-textarea" name="str" id="str" rows="20" placeholder="请输连接符号 如 ”-“ ">-</textarea>
+        </div>
+        <div class="layui-col-md6">
+            <span class="color-red font-w7">组合结果</span>
+            <textarea class="layui-textarea" name="res" id="res" rows="20" readonly placeholder="成生结果"></textarea>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+
+    function sortChinese(arr) { // 参数： 排序的数组
+        arr.sort(function (item1, item2) {
+            return item1.localeCompare(item2, 'zh-CN');
+        })
+    }
+    function view(cc) {
+        var rootword = $("#rootword").val();
+        var ljf = $("#str").val();
+        var jg = Text2Html(rootword, ljf, cc);
+        $("#res").val(jg);
+    }
+
+
+    function Text2Html(str, ljf, cc) {
+        if (str == null) {
+            return "";
+        }
+        str = str.replaceAll(" ", '');
+        if (cc == true) {
+            strarr = str.split("\n");
+            strarr=strarr.deleteEle();
+            sortChinese(strarr);
+            str = strarr.join(ljf);
+        } else {
+            strarr = str.split(ljf);
+            strarr=strarr.deleteEle();
+            sortChinese(strarr);
+            str = strarr.join('\n');
+        }
+        return str;
+    }
+
+    Array.prototype.deleteEle=function(){
+        var newArr = this;
+        for (var i=newArr.length-1; i>=0; i--)
+        {
+            var targetNode = newArr[i];
+            for (var j=0; j<i; j++)
+            {
+                if(targetNode == newArr[j]){
+                    newArr.splice(i,1);
+                    break;
+                }
+            }
+        }
+        return newArr;
+    }
+
+    layui.form.render();
+</script>
+{/block}

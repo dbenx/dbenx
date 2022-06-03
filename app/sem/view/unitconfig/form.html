@@ -1,0 +1,107 @@
+<form class="layui-form layui-card" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">上级名称</label>
+            <div class="layui-input-block">
+                <select name='pid' class='layui-select' lay-search>
+                    <option value='0'>顶级单元</option>
+                    {if isset($tmenu)}
+                    {foreach $tmenu as $k=>$v}
+                    {if $v.id.'' eq input('pid')}
+                    <option selected value="{$v.id}">{$v.title}</option>
+                    {else}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/if}{/foreach}
+                    {/if}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">地域设置</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="region" value="0">
+                {if isset($vo.region)}
+                <input type="checkbox" id="region" value="{$vo.region}"  name="region" lay-skin="switch"
+                       lay-filter="switchRegion" lay-text="区分地域|不区分地域" {$vo.region>0?'checked':''} >
+                {else}
+                <input type="checkbox" id="region" value="0"  name="region" lay-skin="switch"
+                       lay-filter="switchRegion" lay-text="区分地域|不区分地域">
+                {/if}
+            </div>
+        </div>
+
+        <div id="regionalwords" class="layui-form-item {if (isset($vo.region) and $vo.region eq 0)}layui-hide{/if}">
+            <label class="layui-form-label">地域词根</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="regionalwords" rows="5" placeholder="请输入地域词">{$vo.regionalwords|default=''}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">单元名称</label>
+            <div class="layui-input-block">
+                <input name="title" value='{$vo.title|default=""}' required placeholder="请输入分类名称"
+                       class="layui-input">
+                <p class="help-block"><b>必选</b>，请填写名称（如：品牌，专业），建议字符不要太长，一般4-6个汉字</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">匹配规则</label>
+            <div class="layui-input-block">
+                {if isset($vo.match)}
+                <input type="radio" name="match" value="1" title="包含" {eq name='$vo.match' value='1' }checked{/eq}>
+                <input type="radio" name="match" value="2" title="不包含" {eq name='$vo.match' value='2' }checked{/eq}>
+                <input type="radio" name="match" value="3" title="等于" {eq name='$vo.match' value='3' }checked{/eq}>
+                <input type="radio" name="match" value="4" title="不等于" {eq name='$vo.match' value='4' }checked{/eq}>
+                <input type="radio" name="match" value="5" title="开始于" {eq name='$vo.match' value='5' }checked{/eq}>
+                <input type="radio" name="match" value="6" title="截止于" {eq name='$vo.match' value='6' }checked{/eq}>
+                {else}
+                <input type="radio" name="match" value="1" title="包含" checked>
+                <input type="radio" name="match" value="2" title="不包含">
+                <input type="radio" name="match" value="3" title="等于">
+                <input type="radio" name="match" value="4" title="不等于">
+                <input type="radio" name="match" value="5" title="开始于">
+                <input type="radio" name="match" value="6" title="截止于">
+                {/if}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">匹配词根</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="rootword" rows="15"
+                          placeholder="请输入词根">{$vo.rootword|default=''}</textarea>
+                <p class="help-block">词根，一行一个</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    <input type='hidden' value="{:session('user.id')}" name='uid'>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+
+{block name='script'}
+<script>
+    //监听指定开关
+    form.on('switch(switchRegion)', function (data) {
+        if (this.checked) {
+            $('#region').val(1);
+            $('#regionalwords').removeClass('layui-hide');
+        }else{
+            $('#region').val(0);
+            $('#regionalwords').addClass('layui-hide');
+        }
+    });
+    layui.form.render();
+    require(['jquery.autocompleter'], function () {
+    });
+</script>
+{/block}

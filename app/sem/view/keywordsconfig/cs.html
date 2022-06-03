@@ -1,0 +1,161 @@
+{extend name="../../admin/view/main"}
+{block name="content"}
+<div class="think-box-shadow" style="margin-top: 30px;">
+    <fieldset>
+        <legend>匹配规则</legend>
+        <div class="layui-form-item layui-inline">
+            <button id="show" class="layui-btn">展开</button>
+            <button id="hide" class="layui-btn layui-btn-warm">折叠</button>
+            <button id="reload" class="layui-btn layui-btn-normal">重载</button>
+            <button id="showSn" class="layui-btn layui-btn-primary">展示run数据</button>
+            <button id="getData" class="layui-btn layui-btn-primary">获取data数据</button>
+        </div>
+    </fieldset>
+    <table class="layui-hidden" id="treeTable" lay-filter="treeTable"></table>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.config({
+        base: '/static/plugs/layui_exts/tableTreeDj/'
+    });
+    layui.use(['table', 'tableTreeDj'], function () {
+        const table = layui.table
+        const tableTree = layui.tableTreeDj;
+        const $ = layui.$;
+
+
+        const cols = [[
+            {type: 'checkbox', sort: true}
+            , {field: 'id', title: 'ID', width: 100, align: "center"}
+            , {field: 'sort', title: '排序权重', width: 120, align: 'center', templet: '#SortInputTpl'}
+            , {field: 'title', minWidth: 300, title: '账户计划结构'}
+            , {
+                field: 'match', title: '匹配模式', width: 100, align: 'center'
+                , templet: function (d) {
+                    if (d.match == 1) {
+                        return '<font color="#009688">包含</font>'
+                    } else if (d.match == 2) {
+                        return '<font color="#5FB878">不包含</font>'
+                    } else if (d.match == 3) {
+                        return '<font color="#393D49">等于</font>'
+                    } else if (d.match == 4) {
+                        return '<font color="#1E9FFF">不等于</font>'
+                    } else if (d.match == 5) {
+                        return '<font color="#FFB800">开始于</font>'
+                    } else if (d.match == 6) {
+                        return '<font color="#FF5722">截止于</font>'
+                    } else {
+                        return ''
+                    }
+                }
+            }
+            , {field: 'rootword', title: '词根', width: 600}
+            , {
+                field: 'status', title: '状态', minWidth: 100, align: 'center'
+                , templet: function (d) {
+                    if (d.status == 0) {
+                        return '<span className="color-red">已禁用</span>'
+                    } else {
+                        return '<span className="color-green">已激活</span>'
+                    }
+                }
+            }
+            , {toolbar: '#toolbar', title: '操作面板', minWidth: 200, align: 'center', fixed: 'right'}
+        ]]
+
+
+        // 表格配置
+        const objTable = {
+            elem: '#treeTable'
+            , url: '{:url("json")}'
+            , limit: 2
+            , cols: cols
+            , id: 'list'
+            , loading: true
+        }
+
+        const objTree = {
+            //defaultShow: true,
+            title: 'title',
+            keyId: "id",
+            keyPid: "pid",
+            indent: '&nbsp;&nbsp;&nbsp;&nbsp;',
+            icon: {
+                open: 'layui-icon layui-icon-triangle-d', // 展开时候图标
+                close: 'layui-icon layui-icon-triangle-r', // 折叠时候图标
+            }
+            , showCache: true, //是否开启展开折叠缓存,默认不开启
+        }
+
+        // tableTree 渲染表格
+        //table.render(objTable)
+        tableTree.render(objTable, objTree);
+
+        tableTree.cache(tableTree.getShowCache(), [])
+
+        $('#show').click(() => {
+            tableTree.showAll(objTable);
+        });
+        $('#hide').click(() => {
+            tableTree.hideAll(objTable);
+        });
+
+        $('#showSn').click(() => {
+            const run = tableTree.getRun();
+            const dataIndex = run.dataIndex;
+            for (let id in dataIndex) {
+                let has = true;
+                let sn = id;
+                let idNow = id;
+
+                while (has) {
+                    if (!!run.childParent[idNow]) {
+                        let pid = run.childParent[idNow];
+                        sn = pid + " - " + sn;
+                        idNow = pid
+                    } else {
+                        break;
+                    }
+                }
+                $("[lay-id='" + objTable.id + "'] table tr[data-index='" + dataIndex[id] + "'] td[data-field=" + "sn" + "]").children("div").html(sn);
+            }
+        });
+
+        $('#getData').click(() => {
+            const data = tableTree.getDataOri();
+            console.log(data);
+        });
+
+        $('#reload').click(() => {
+            objTable.where = {key: "val"}
+            tableTree.reload(objTable, 'list');
+        });
+
+    });
+</script>
+<!-- 列表排序权重模板 -->
+<script type="text/html" id="SortInputTpl">
+    <input min="0" type="number" data-blur-number="0" data-action-blur="{:sysuri()}" data-value="id#{{d.id}};action#sort;sort#{value}" data-loading="false" value="{{d.sort}}" class="layui-input text-center">
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth("add")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-primary" data-title="添加子菜单"
+       data-modal='{:url("add")}?pid={{d.id}}'>添 加</a>
+    <!--{/if}-->
+
+    <!--{if auth("edit")}-->
+    <a data-dbclick class="layui-btn layui-btn-sm" data-title="编辑菜单"
+       data-modal='{:url("edit")}?id={{d.id}}'>编 辑</a>
+    <!--{/if}-->
+
+    <!--{if  auth("state")}-->
+    <a class="layui-btn layui-btn-warm layui-btn-sm" data-confirm="确定要禁用菜单吗？"
+       data-action="{:url('state')}" data-value="id#{{d.ids}}};status#0"
+       data-csrf="{:systoken('state')}">禁 用</a>
+    <!--{/if}-->
+</script>
+{/block}
+
+{/block}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../layui/src/css/layui.css" media="all">
+    <script type="text/javascript" src="../../../layui/src/layui.js"></script>
+</head>
+<body>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+
+<table style="display: none" lay-filter="demo" id="demo">
+    <thead>
+    <tr>
+        <th lay-data="{field:'id', width:100}">ID</th>
+        <th lay-data="{field:'pid', width:100}">PID</th>
+        <th lay-data="{field:'username', width:500}">昵称</th>
+        <th lay-data="{field:'age', width:80, sort:true}">年龄</th>
+        <th lay-data="{field:'sign'}">签名</th>
+        <th lay-data="{toolbar: '#toolbarDemo'}">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<div id="page"></div>
+
+
+<script type="text/javascript">
+    layui.config({
+        base: '../../../layui_exts/tableTreeDj/'
+    });
+    layui.use(['table','tableTreeRemoteDj'], function() {
+        const table = layui.table
+        const tableTree = layui.tableTreeRemoteDj;
+        const $ = layui.$;
+        const tableKey = 'demo'
+
+        // 表格配置
+        const objTable = {
+            height:500
+            , limit: 10000
+        }
+
+        // 组件配置
+        const objTree = {
+            tableKey: 'demo'
+            ,fieldId: 'id'
+            ,fieldClick: 'username'
+            ,reqUrl: './getData.php'
+            ,reqKey: 'pid'
+            ,reqVal: 0
+        }
+        tableTree.render(objTable, objTree)
+    });
+</script>
+
+</body>
+</html>

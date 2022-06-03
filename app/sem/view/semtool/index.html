@@ -1,0 +1,45 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<form class="layui-form layui-card" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+<div class="think-box-shadow table-block">
+    <div class="layui-row layui-col-space10" style="margin-bottom: 20px;">
+        <div class="layui-col-md2">
+            <label class="layui-form-label">关键词01</label>
+            <textarea class="layui-textarea" name="keyword1"  rows="30" placeholder="请输入关键词">{$keyword1|default=''}</textarea>
+        </div>
+        <div class="layui-col-md2">
+            <label class="layui-form-label">关键词02</label>
+            <textarea class="layui-textarea" name="keyword2"  rows="30" placeholder="请输入关键词">{$keyword2|default=''}</textarea>
+        </div>
+        <div class="layui-col-md2">
+            <label class="layui-form-label">关键词03</label>
+            <textarea class="layui-textarea" name="keyword3"  rows="30" placeholder="请输入关键词">{$keyword3|default=''}</textarea>
+        </div>
+        <div class="layui-col-md2">
+            <label class="layui-form-label">关键词04</label>
+            <textarea class="layui-textarea" name="keyword4"  rows="30" placeholder="请输入关键词">{$keyword4|default=''}</textarea>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label" style="color: red;">组合结果</label>
+            <textarea class="layui-textarea" name="keywordjg"  rows="30" readonly placeholder="组合结果">{$keywordjg|raw|default=''}</textarea>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" type='submit'>开始组合</button>
+            <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+        </div>
+    </div>
+</div>
+</form>
+{/block}
+
+{block name='script'}
+<script>
+    // layui 表单组件初始化
+    layui.form.render();
+    // layui 组件动作初始化
+    layui.element.render();
+</script>
+{/block}

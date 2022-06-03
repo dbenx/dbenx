@@ -1,0 +1,276 @@
+{extend name="../../admin/view/table"}
+
+{block name="button"}
+
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm  layui-btn-primary layui-border-green' data-open='{:url("add")}'>添加链接</button>
+<!--{/if}-->
+
+<!--{if auth("updataall")}-->
+<button data-action='{:url("updataall")}' data-rule="id#{id}" data-table-id="Baidu" data-confirm="确定要更新吗？"
+        class='layui-btn layui-btn-sm layui-btn-primary'>批量更新
+</button>
+<!--{/if}-->
+
+<!--{if auth('mark')}-->
+<button class="layui-btn layui-btn-sm layui-btn-primary demo1">批量标记<i
+        class="layui-icon layui-icon-down layui-font-12"></i></button>
+<!--{/if}-->
+
+
+<!--{if auth("remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{id}" data-table-id="Baidu" data-confirm="确定要删除选中的链接吗？"
+        class='layui-btn layui-btn-sm layui-btn-primary layui-border-red'>批量删除
+</button>
+<!--{/if}-->
+
+{/block}
+
+{block name='content'}
+
+<div class="layui-tab layui-tab-card">
+    <ul class="layui-tab-title">
+        {foreach ['index'=>'全部链接','noanswer'=>'未 回 答','handin'=>'已 上 交','recycle'=>'回 收 站'] as $k=>$v}
+        {if isset($type) and $type eq $k}
+        <li class="layui-this color-red" data-open="{:url('index')}?type={$k}">{$v}</li>
+        {else}
+        <li data-open="{:url('index')}?type={$k}">{$v}</li>
+        {/if}
+        {/foreach}
+    </ul>
+    <div class="layui-tab-content">
+        {include file='baiduzd/menu'}
+        {include file='baiduzd/index_search'}
+        <table id="Baidu" data-url="{:sysuri('index')}" lay-filter="test-dropdown-table"
+               data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#Baidu').layTable({
+            limits: [20, 100, 200, 500, 1000, 5000],
+            where: {type: '{$type|default="index"}'},
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true},
+                {field: 'id', title: 'ID', width: 80, sort: true, align: 'center'},
+                {
+                    field: 'url', title: 'url', minWidth: 300
+                    , templet: function (d) {
+                        if (d.url) {
+                            return '<a href=' + d.url + ' target="_blank"  class="layui-table-link">' + d.url + '</a>'
+                        } else {
+                            return ''
+                        }
+                    }
+                },
+                {
+                    field: 'title', title: '标题', minWidth: 300
+                    , templet: function (d) {
+                        if (d.title) {
+                            return '<a href=' + d.huida + ' target="_blank"  class="layui-table-link">' + d.title + '</a>'
+                        } else {
+                            return ''
+                        }
+                    }
+                },
+                {
+                    field: 'username', title: '回答用户', sort: true, minWidth: 380
+                    , templet: function (d) {
+                        if (d.username) {
+                            var arr = d.username.split("|")
+                            var str = ''
+                            for (i = 0; i < arr.length - 1; i++) {
+                                str = '<button type="button" class="layui-btn layui-btn-primary layui-btn-xs">' + arr[i] + '</button>' + str;
+                            }
+                            return str
+                        } else {
+                            return '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger">未作答</button>'
+                        }
+                    }
+                },
+                {toolbar: '#mark', title: '标记', width: 100, align: 'center'},
+                {field: 'create_at', title: '创建时间', width: 150},
+                {toolbar: '#toolbar', title: '操作面板', width: 200, align: 'center', fixed: 'right'}
+            ]],
+
+        });
+        layui.use(['dropdown', 'util', 'layer', 'table'], function () {
+            var dropdown = layui.dropdown,
+                table = layui.table,
+                $ = layui.jquery;
+            dropdown.render({
+                elem: '.demo1',
+                data: [{
+                    title: '标 记',
+                    mark: 0
+                }, {
+                    title: '已 上 交',
+                    mark: 1
+                }, {
+                    title: '已 回 答',
+                    mark: 4
+                }, {
+                    title: '链接被删除',
+                    mark: 2
+                }, {
+                    title: '回答被删除',
+                    mark: 3
+                }],
+                click: function (obj) {
+                    var checkStatus = layui.table.checkStatus('Baidu'); //demo 即为基础参数 id 对应的值
+                    console.log(checkStatus.data) //获取选中行的数据即 多个行对象
+                    //console.log(checkStatus.data.length) //获取选中行数量，可作为是否有选中行的条件
+                    //console.log(checkStatus.isAll ) //表格是否全选
+                    if (checkStatus.data.length > 0) {
+                        var idsArray = [];
+                        for (var i = 0; i < checkStatus.data.length; i++) {
+                            idsArray.push(checkStatus.data[i].id);
+                        }
+                        var ids = idsArray.toString();
+                        console.log(ids);
+                        layui.layer.alert(ids);
+                        var checkStatus = layui.table.checkStatus('Baidu'); //demo 即为基础参数 id 对应的值
+                        if (checkStatus.data.length > 0) {
+                            var idsArray = [];
+                            for (var i = 0; i < checkStatus.data.length; i++) {
+                                idsArray.push(checkStatus.data[i].id);
+                            }
+                            var ids = idsArray.toString();
+                            $.ajax({
+                                url: "{:url('mark')}",
+                                type: 'POST',
+                                dataType: "json",
+                                data: {mark: obj.mark, id: ids},
+                                success: function (data) {
+                                    $(".layui-laypage-btn")[0].click()
+                                    layer.msg(data.info)
+                                }
+                            });
+                        } else {
+                            layui.layer.msg('未选择任何数据！');
+                        }
+                    }
+
+
+                }
+            });
+
+            //行工具事件
+            table.on('tool(test-dropdown-table)', function (obj) {
+                var that = this
+                data = obj.data;
+                if (obj.event === 'more') {
+                    //更多下拉菜单
+                    dropdown.render({
+                        elem: that,
+                        show: true, //外部事件触发即显示
+                        data: [{
+                            title: '标 记',
+                            id: data.id,
+                            mark: 0
+                        }, {
+                            title: '已 上 交',
+                            id: data.id,
+                            mark: 1
+                        }, {
+                            title: '已 回 答',
+                            id: data.id,
+                            mark: 4
+                        }, {
+                            title: '链接被删除',
+                            id: data.id,
+                            mark: 2
+                        }, {
+                            title: '回答被删除',
+                            id: data.id,
+                            mark: 3
+                        }],
+
+                        click: function (data, othis) {
+                            //根据 id 做出不同操作
+                            if (data.id != '') {
+                                $.ajax({
+                                    url: "{:url('mark')}",
+                                    type: 'POST',
+                                    dataType: "json",
+                                    data: {mark: data.mark, id: data.id},
+                                    success: function (data) {
+                                        $(".layui-laypage-btn")[0].click()
+                                        layer.msg(data.info)
+                                    }
+                                });
+                            }
+                        },
+                        align: 'right' //右对齐弹出（v2.6.8 新增）
+                        ,
+                        style: 'box-shadow: 1px 1px 10px rgb(0 0 0 / 12%);' //设置额外样式
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<script type="text/html" id="mark">
+    {{# if(d.mark===1){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="more">已上交<i class="layui-icon layui-icon-down"></i></a>
+    {{# }else if(d.mark===2){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs  layui-btn-danger" lay-event="more">链接已删除<i class="layui-icon layui-icon-down"></i></a>
+    <!--{/if}-->
+    {{# }else if(d.mark===3){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs  layui-btn-warm" lay-event="more">答案被删除<i
+            class="layui-icon layui-icon-down"></i></a>
+    <!--{/if}-->
+    {{# }else if(d.mark===4){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs  layui-btn-normal" lay-event="more">已 回 答<i class="layui-icon layui-icon-down"></i></a>
+    <!--{/if}-->
+    {{# }else{ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn  layui-btn-primary layui-btn-xs" lay-event="more">标记<i
+            class="layui-icon layui-icon-down"></i></a>
+    <!--{/if}-->
+    {{# } }}
+
+
+</script>
+
+
+<script type="text/html" id="toolbar">
+
+    <!--{if auth("upurl")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-primary" data-dbclick data-open="{:url('upurl')}?id={{d.id}}"
+       data-title="更 新">更 新</a>
+    <!--{/if}-->
+
+
+    <!-- {if isset($type) and $type eq 'index'}-->
+    <!--{if auth("state")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('state')}" data-value="id#{{d.id}};status#1">回收站</a>
+    <!--{/if}-->
+    <!--{elseif isset($type) and $type eq 'recycle'}-->
+    <!--{if auth("state")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" data-action="{:url('state')}" data-value="id#{{d.id}};status#0">恢
+        复</a>
+    <!--{/if}-->
+    <!--{if auth("remove")}-->
+    <a class='layui-btn layui-btn-sm layui-btn-danger' data-confirm="确定要删除该数据吗？" data-action='{:url("remove")}'
+       data-value="id#{{d.id}}">
+        删 除
+    </a>
+    <!--{/if}-->
+    <!--{else}-->
+    <!--{if auth("state")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('state')}" data-value="id#{{d.id}};status#1">回收站</a>
+    <!--{/if}-->
+
+    <!--{/if}-->
+</script>
+{/block}

@@ -1,0 +1,100 @@
+{extend name="../../admin/view/main"}
+
+{block name="button"}
+<!-- 上传按钮放在搜索按钮后面，可根据自己的需求调整位置 -->
+<!--{if auth("import")}-->
+<button class='layui-btn layui-btn-sm layui-btn-active' data-file data-type="xlsx,xls" data-uptype='local' data-field="topic_excel">上传题库</button>
+<!--{/if}-->
+
+<!--{if auth("import")}-->
+<button class='layui-btn layui-btn-sm layui-btn-active layui-btn-danger' data-filed data-type="xlsx,xls" data-uptype='local' data-file="topic_excel">不覆盖上传题库</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key};deleted#1"  data-confirm="确定批量删除记录吗？" class='layui-btn layui-btn-sm layui-btn-primary'>批量删除</button>
+<!--{/if}-->
+
+{/block}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='sem/semdata/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <label><input data-auto-none data-check-target='.list-check-box' type='checkbox'></label>
+            </th>
+            <th class='list-table-sort-td'>
+                <button class="layui-btn layui-btn-xs" data-reload type="button">刷 新</button>
+            </th>
+            <th class="text-left nowrap">编号</th>
+            <th class="text-left nowrap">单元名</th>
+            <th class="text-left nowrap">关键词</th>
+            <th class="text-left nowrap"></th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td think-checkbox'>
+                <label><input class="list-check-box" type='checkbox' value='{$vo.id}'></label>
+            </td>
+            <td class='list-table-sort-td'>
+                <label><input class="list-sort-input" data-action-blur="{:request()->url()}" data-loading="false" data-value="id#{$vo.id};action#sort;sort#{value}" value="{$vo.sort}"></label>
+            </td>
+            <td class="text-left nowrap">{$vo.id|default=''}</td>
+            <td class="text-left nowrap">{$vo.danyuan|default=''}</td>
+            <td class="text-left nowrap">{$vo.keywords|default=''}</td>
+            <td class='text-left nowrap'>
+
+                <!--{if auth("remove")}-->
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('remove')}" data-confirm="确定要删除该关键词吗？" data-value="id#{$vo.id}">删 除</a>
+                <!--{/if}-->
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+
+<script>
+    window.form.render();
+    $(function () {
+        /*！文件上传过程事件处理 覆盖数据 */
+        $('[data-file]').on('upload.done', function (file, obj) {
+            // obj.file 当前完成的文件对象
+            // obj.data 当前文件上传后服务端返回的内容
+            console.log(file);
+            console.log(obj);
+            /*! 提交数据并返回结果 */
+            $.form.load('{:url("import")}', {file: obj.data.url}, 'post');
+        })
+
+        /*！文件上传过程事件处理 不覆盖数据*/
+        $('[data-filed]').on('upload.done', function (file, obj) {
+            // obj.file 当前完成的文件对象
+            // obj.data 当前文件上传后服务端返回的内容
+            console.log(file);
+            console.log(obj);
+            /*! 提交数据并返回结果 */
+            $.form.load('{:url("import")}', {file: obj.data.url,fugai:true}, 'post');
+        })
+
+
+    });
+    require(['excel'], function (excel) {
+        excel.bind(function (data) {
+            data.forEach(function (item, index) {
+                data[index] = [item.danyuan, item.keywords];
+            });
+            data.unshift(['单元', '关键词']);
+            return data;
+        }, '关键词列表');
+    });
+</script>
+{/block}
+

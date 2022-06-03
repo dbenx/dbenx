@@ -1,0 +1,28 @@
+{extend name="../../admin/view/main"}
+{block name="button"}
+
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-file data-type="xlsx,xls"
+        data-uptype='local' data-field="topic_excel">导入数据
+</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-action='{:url("remove")}' data-value="id#0"
+        data-confirm="确定要删除这些删除吗？">清空数据
+</button>
+<!--{/if}-->
+{/block}
+
+{block name='content'}
+
+<div class="think-box-shadow">
+
+
+
+</div>
+
+<script>
+    window.form.render();
+</script>
+{/block}

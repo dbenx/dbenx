@@ -1,0 +1,60 @@
+{extend name="../../admin/view/table"}
+
+{block name="button"}
+<!--{if auth("add")}-->
+<button data-modal='{:url("add")}' data-title="添加" class='layui-btn layui-btn-sm layui-btn-primary'>添加地域</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button data-action='{:url("remove")}' data-table-id="RoleData" data-rule="id#{id}" data-confirm="确定要批量删除吗？"
+        class='layui-btn layui-btn-sm layui-btn-primary'>批量删除
+</button>
+<!--{/if}-->
+
+<button id="showSn" class="layui-btn layui-btn-primary" data-file data-type="xlsx,xls" data-uptype='local'
+        data-field="topic_excel"><i class="layui-icon">&#xe655;</i>导入数据
+</button>
+
+
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+
+    <table id="RoleData" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+
+    $(function () {
+        /*！捕获文件上传结果 */
+        $('[name=topic_excel]').on('change', function () {
+            // 文件地址变量事件
+            console.log(this.value)
+        });
+
+        /*！文件上传过程事件处理 */
+        $('[data-file]').on('upload.choose', function (files) {
+            // 文件选择后的事件
+        }).on('upload.hash', function (file) {
+            // file 当前文件对象
+        }).on('upload.progress', function (obj) {
+            // obj.file 当前文件对象
+            // obj.event 文件上传进度事件
+            // obj.number 当前上传进度值
+        }).on('upload.done', function (obj) {
+            // obj.file 当前完成的文件对象
+            // obj.data 当前文件上传后服务端返回的内容
+            console.log(obj.data);
+        }).on('upload.complete', function () {
+            // 全部文件上传成功
+        })
+    });
+
+
+</script>
+
+
+{/block}

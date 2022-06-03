@@ -1,0 +1,185 @@
+<fieldset>
+    <legend>提示信息</legend>
+    <div class="layui-form-item layui-inline">
+        <p>注：如需要清空数据，请点击右上角清空数据按钮，清空的数据将无法恢复，请紧慎操作！</p>
+        <p>分词已完成：本次共计用时间：<font color="red"> {$execution_time??0}</font> 秒，共计<font
+                color="red">{$total['allkeywords']??0} </font>个词，匹配账户计划 <font color="red"> {$total['jhnum']??0} </font>
+            个，匹配单元 <font color="red">{$total['unitnum']??0}</font> 个,还剩下 <font color="red">{$total['noall']??0}</font>
+            个关键词未分配</p>
+    </div>
+
+
+    <fieldset class="layui-field-title" style="margin-bottom: 0px;">
+        <legend>分词</legend>
+    </fieldset>
+
+    <div class="layui-form layui-form-pane form-search">
+            <form action="{:request()->url()}" autocomplete="off" lay-filter="example" class="layui-form layui-form-pane form-search" method="post" onsubmit="return false">
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">计划规则</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="id">
+                        <option value=''>-- 未选择 --</option>
+                        {if isset($kcon)}
+                        {foreach $kcon as $k=>$v}
+                        {if $v.id.'' eq input('id')}
+                        <option selected value="{$v.id}">{$v.title}</option>
+                        {else}
+                        <option value="{$v.id}">{$v.title}</option>
+                        {/if}{/foreach}
+                        {/if}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">单元规则</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="unitid">
+                        <option value=''>-- 未选择 --</option>
+                        {if isset($units)}
+                        {foreach $units as $k=>$v}
+                        {if $v.id.'' eq input('id')}
+                        <option selected value="{$v.id}">{$v.title}</option>
+                        {else}
+                        <option value="{$v.id}">{$v.title}</option>
+                        {/if}{/foreach}
+                        {/if}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">地域规则</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="regionid">
+                        <option value=''>-- 未选择 --</option>
+                        {if isset($region)}
+                        {foreach $region as $k=>$v}
+                        {if $v.id.'' eq input('id')}
+                        <option selected value="{$v.id}">{$v.title}</option>
+                        {else}
+                        <option value="{$v.id}">{$v.title}</option>
+                        {/if}{/foreach}
+                        {/if}
+                    </select>
+                </div>
+            </div>
+                <div class="layui-form-item layui-inline">
+                    <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+                </div>
+                <button type="button" class="layui-btn layui-btn-primary" id="LAY-component-form-getval"><i
+                        class="layui-icon">&#xe615;</i> 开始分词
+                </button>
+        </form>
+    </div>
+
+
+
+    <fieldset class="layui-field-title" style="margin-bottom: 0px;">
+        <legend>数据导出</legend>
+    </fieldset>
+    <div class="layui-form layui-form-pane form-search">
+        <div class="layui-form-item layui-inline">
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">匹配模式</label>
+                <label class="layui-input-inline">
+                    <select name="status" class="layui-select">
+                        <option value=''>-- 未设置 --</option>
+                        {foreach ['1'=>'短语','2'=>'广泛','3'=>'精确'] as $k=>$v}
+                        {if isset($get.status) and $get.status eq $k}
+                        <option selected value="{$k}">{$v}</option>
+                        {else}
+                        <option value="{$k}">{$v}</option>
+                        {/if}{/foreach}
+                    </select>
+                </label>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">出价</label>
+                <label class="layui-input-inline">
+                    <input name="title" value="{$get.title|default='1.00'}" placeholder="出价" class="layui-input">
+                </label>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">访问URL</label>
+                <label class="layui-input-inline">
+                    <input name="title" value="{$get.title|default=''}" placeholder="出价" class="layui-input">
+                </label>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">移动URL</label>
+                <label class="layui-input-inline">
+                    <input name="title" value="{$get.title|default=''}" placeholder="出价" class="layui-input">
+                </label>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">状态</label>
+                <label class="layui-input-inline">
+                    <select name="status" class="layui-select">
+                        <option value=''>-- 未设置 --</option>
+                        {foreach ['1'=>'启动','2'=>'暂停'] as $k=>$v}
+                        {if isset($get.status) and $get.status eq $k}
+                        <option selected value="{$k}">{$v}</option>
+                        {else}
+                        <option value="{$k}">{$v}</option>
+                        {/if}
+                        {/foreach}
+                    </select>
+                </label>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <button type="button" data-form-export="{:request()->url()}" class="layui-btn layui-btn-primary">
+                    <i class="layui-icon layui-icon-export"></i>导出数据
+                </button>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<script>
+    layui.$('#LAY-component-form-getval').on('click', function () {
+        var data = form.val('example');
+        let id = data.id;//计划ID
+        let unitid = data.unitid;//单元ID
+        let regionid = data.regionid;//地域ID
+        if (!id) {
+            layer.msg('请选择计划规则！');
+            return;
+        } else if (!unitid) {
+            layer.msg('请选择单元规则！');
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', '{:url("fcrw")}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send("id=" + id + "&unitid=" + unitid + "&regionid="+regionid+"uid={:session('user.id')}");
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var text = xhr.responseText;
+                var response = JSON.parse(text);
+                if(response.code===1){
+                    $.loadQueue(response.data)
+                }
+                console.log(response.code)
+            } else {
+                console.log(xhr)
+            }
+        };
+
+    });
+
+    function fc() {
+
+        var data = form.val('example');
+        alert(JSON.stringify(data));
+
+
+    }
+
+    window.form.render()
+</script>

@@ -1,0 +1,138 @@
+{extend name="../../admin/view/table"}
+
+{block name='content'}
+<div class="layui-tab layui-tab-card">
+    <div class="layui-tab-content">
+        {include file='baiduzd/menu'}
+        {include file='baiduzd/index_search'}
+        <table id="Baidu" data-url="{:sysuri('zhidaolist')}" lay-filter="test-dropdown-table"
+               data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#Baidu').layTable({
+            limits: [20, 100, 200, 500, 1000, 5000],
+            where: {type: '{$type|default="index"}'},
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true},
+                {field: 'id', title: 'ID', width: 80, sort: true, align: 'center'},
+                {
+                    field: 'url', title: 'url', minWidth: 300
+                    , templet: function (d) {
+                        if (d.url) {
+                            return '<a href=' + d.url + ' target="_blank"  class="layui-table-link">' + d.url + '</a>'
+                        } else {
+                            return ''
+                        }
+                    }
+                },
+                {
+                    field: 'title', title: '标题', minWidth: 300
+                    , templet: function (d) {
+                        if (d.title) {
+                            return '<a href=' + d.huida + ' target="_blank"  class="layui-table-link">' + d.title + '</a>'
+                        } else {
+                            return ''
+                        }
+                    }
+                },
+                {
+                    field: 'username', title: '回答用户', sort: true, minWidth: 380
+                    , templet: function (d) {
+                        if (d.username) {
+                            var arr = d.username.split("|")
+                            var str = ''
+                            for (i = 0; i < arr.length - 1; i++) {
+                                str = '<button type="button" class="layui-btn layui-btn-primary layui-btn-xs">' + arr[i] + '</button>' + str;
+                            }
+                            return str
+                        } else {
+                            return '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger">未作答</button>'
+                        }
+                    }
+                },
+                {toolbar: '#mark', title: '标记', width: 100, align: 'center'},
+                {field: 'uid', title: '所属用户',sort: true, width: 100, align: 'center'},
+                {field: 'create_at', title: '创建时间', width: 150},
+            ]],
+
+        });
+
+    });
+</script>
+
+<script type="text/html" id="mark">
+    {{# if(d.status===0){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="more">回收站<i
+            class="layui-icon layui-icon-down"></i></a>
+    {{# }else if(d.status===1){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs  layui-btn-primary" lay-event="more">标 记</a>
+    <!--{/if}-->
+    {{# }else if(d.status===2){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs" lay-event="more">已 上 交</a>
+    <!--{/if}-->
+    {{# }else if(d.status===3){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs  layui-btn-normal" lay-event="more">已 回 答</a>
+    <!--{/if}-->
+    {{# }else if(d.status===4){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs" style="background: #2F4056;" lay-event="more">已 采 纳</a>
+    <!--{/if}-->
+    {{# }else if(d.status===5){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs" style="background: #024429;" lay-event="more">被 折 叠</a>
+    <!--{/if}-->
+    {{# }else if(d.status===6){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs" style="background: #ff1800;" lay-event="more">链接被删除<</a>
+    <!--{/if}-->
+    {{# }else if(d.status===7){ }}
+    <!--{if auth('mark')}-->
+    <a class="layui-btn layui-btn-xs" style="background:#961b0f;" lay-event="more">回答被删除</a>
+    <!--{/if}-->
+    {{# } }}
+
+
+</script>
+
+
+<script type="text/html" id="toolbar">
+
+    <!--{if auth("upurl")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-primary" data-dbclick data-open="{:url('upurl')}?id={{d.id}}"
+       data-title="更 新">更 新</a>
+    <!--{/if}-->
+
+
+    <!-- {if isset($type) and $type eq 'index'}-->
+    <!--{if auth("state")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('state')}" data-value="id#{{d.id}};status#0">回收站</a>
+    <!--{/if}-->
+    <!--{elseif isset($type) and $type eq 'recycle'}-->
+    <!--{if auth("state")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" data-action="{:url('state')}" data-value="id#{{d.id}};status#1">恢
+        复</a>
+    <!--{/if}-->
+    <!--{if auth("remove")}-->
+    <a class='layui-btn layui-btn-sm layui-btn-danger' data-confirm="确定要删除该数据吗？无法恢复！" data-action='{:url("remove")}'
+       data-value="id#{{d.id}}">
+        删 除
+    </a>
+    <!--{/if}-->
+    <!--{else}-->
+    <!--{if auth("state")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('state')}" data-value="id#{{d.id}};status#0">回收站</a>
+    <!--{/if}-->
+
+    <!--{/if}-->
+</script>
+{/block}

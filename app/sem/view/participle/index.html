@@ -1,0 +1,155 @@
+{extend name="../../admin/view/main"}
+{block name='content'}
+<div class="think-box-shadow">
+    {include file='participle/index_search'}
+    <ul class="layui-tab-title">
+        {foreach ['unit'=>'单元未分配','pid'=>'计划未分配','noall'=>'全部未分配','all'=>'已 分 配','allkeywords'=>'全部关键词'] as $k=>$v} {if
+        isset($type) and $type eq $k}
+        <li class="layui-this" style="background: #098; color: #fff;" data-open="{:url('index')}?type={$k}">{$v}<sup
+                class="layui-badge border-radius">{$total[$k]??0}</sup></li>
+        {else}
+        <li data-open="{:url('index')}?type={$k}">{$v}<sup class="layui-badge border-radius">{$total[$k]??0}</sup></li>
+        {/if}
+        {/foreach}
+    </ul>
+
+    <table id="Participle" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+</div>
+<script>
+    // $(function () {
+    $('#Participle').layTable({
+        limits: [100, 500, 1000, 2000, 5000]
+        , limit: 100,
+        even: true, height: '1000',
+        sort: {field: 'id', type: 'desc'},
+        where: {type: '{$type|default="pid"}'},
+        cols: [[
+            {checkbox: true},
+            {field: 'id', title: 'ID', width: 80, align: 'center'},
+            {
+                field: 'pid', title: '计划', width: 280, align: 'left', templet: function (d) {
+                    if (d.pid == 0) {
+                        return '<font color="red">未匹配</font> '
+                    } else {
+                        return d.pid;
+                    }
+                }
+            },
+            {
+                field: 'planmatch', title: '计划 [匹配]-词根', width: 200, align: 'center'
+                , templet: function (d) {
+                    if (d.planmatch == 1) {
+                        return '<font color="#009688">[包含]</font> ' + d.plankw;
+                    } else if (d.planmatch == 2) {
+                        return '<font color="#5FB878">[不包含]</font> ' + d.plankw;
+                    } else if (d.planmatch == 3) {
+                        return '<font color="#393D49">[等于]</font> ' + d.plankw;
+                    } else if (d.planmatch == 4) {
+                        return '<font color="#1E9FFF">[不等于]</font> ' + d.plankw;
+                    } else if (d.planmatch == 5) {
+                        return '<font color="#FFB800">[开始于]</font> ' + d.plankw;
+                    } else if (d.planmatch == 6) {
+                        return '<font color="#FF5722">[截止于]</font> ' + d.plankw;
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            {
+                field: 'unitid', title: '单元', width: 200, align: 'left', templet: function (d) {
+                    if (d.unitid == 0) {
+                        return '<font color="red">未匹配</font> '
+                    } else {
+                        return d.unitid;
+                    }
+                }
+            },
+            {
+                field: 'unitmatch', title: '单元 [匹配]-词根', width: 200, align: 'center'
+                , templet: function (d) {
+                    if (d.unitmatch == 1) {
+                        return '<font color="#009688">[包含]</font> ' + d.unitkw;
+                    } else if (d.unitmatch == 2) {
+                        return '<font color="#5FB878">[不包含]</font> ' + d.unitkw;
+                    } else if (d.unitmatch == 3) {
+                        return '<font color="#393D49">[等于]</font> ' + d.unitkw;
+                    } else if (d.unitmatch == 4) {
+                        return '<font color="#1E9FFF">[不等于]</font> ' + d.unitkw;
+                    } else if (d.unitmatch == 5) {
+                        return '<font color="#FFB800">[开始于]</font> ' + d.unitkw;
+                    } else if (d.unitmatch == 6) {
+                        return '<font color="#FF5722">[截止于]</font> ' + d.unitkw;
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            {
+                field: 'regionid',
+                title: '地域',
+                width: 100,
+                align: 'center',
+                templet: "<div>{{d.regionid||'<font color=red>[非地域词]</font>'}}</div>"
+            },
+            {
+                field: 'regionkw',
+                title: '地域-[匹配]-地域',
+                width: 200,
+                align: 'center',
+                templet: '<div>{{d.regionkw||"-"}}</div>'
+            },
+            {
+                field: 'keywords', title: '关键词', minWidth: 100, align: 'left'
+                , templet: function (d) {
+                    if (d.pid == 0) {
+                        return '<font color="red">' + d.keywords + '</font>'
+                    } else {
+                        return d.keywords
+                    }
+                }
+            },
+
+        ]],
+    });
+
+
+    /*！文件上传过程事件处理 覆盖数据 */
+    $('[data-file]').on('upload.done', function (file, obj) {
+        /*! 提交数据并返回结果 */
+        $.form.load('{:url("import")}', {file: obj.data.url}, 'post');
+    })
+
+    require(['excel'], function (excel) {
+        var d = new Date();
+        excel.bind(function (data) {
+            let matchpattern = $("#matchpattern").find("option:selected").text();//匹配模式
+            let offer = $("input[name='offer']").val();//出价
+            let pcurl = $("input[name='pcurl']").val();//PC url
+            let murl = $("input[name='murl']").val();//移动URL
+            let status = $("#status").find("option:selected").text();//启用/暂停
+
+            let suffixurl = $("#suffix").find("option:selected").attr("data-url");
+            let hzurl = $("#suffix").find("option:selected").attr("data-urlhz");
+
+            if (pcurl != '') {
+                pcurl = pcurl + "?" + hzurl;
+            } else {
+                pcurl = suffixurl + "?" + hzurl;
+            }
+            if (murl != '') {
+                murl = murl + "?" + hzurl;
+            } else {
+                murl = suffixurl + "?" + hzurl;
+            }
+
+            data.forEach(function (item, index) {
+                data[index] = [item.pid, item.danyuan, item.keywords, matchpattern, offer, pcurl, murl, status];
+            });
+            data.unshift(['计划', '单元', '关键词', '匹配模式', '出价', '访问URL', '移动访问URL', '启用/暂停']);
+            return data;
+        }, '关键词列表' + d.getTime());
+    });
+    window.form.render();
+
+</script>
+{/block}

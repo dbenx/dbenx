@@ -1,0 +1,44 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<form action="{:request()->url()}" autocomplete="off" class="layui-form layui-card" data-auto="true" method="post">
+    <div class="layui-card-body padding-40">
+        <label class="layui-form-item relative block">
+            <span class="font-w7">URL后辍名</span>
+            <span class="color-desc margin-left-5">Article URLname</span>
+            <input class="layui-input" name="title" placeholder="请输入URL后辍名" required value='{$vo.title|default=""}'>
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="font-w7">URl</span>
+            <span class="color-desc margin-left-5">Article URL</span>
+            <input class="layui-input" name="url" id="url" placeholder="如：http://www.dbenx.com/" required value='{$vo.url|default=""}'>
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="font-w7">URL 实时预览</span>
+            <div class="color-red font-w7" id="ssyl"></div>
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="font-w7">后辍参数</span>
+            <span class="color-desc margin-left-5">Article urlsuffix</span>
+            <textarea class="layui-textarea" rows="20" id="content" name="content" placeholder="请输入后辍参数,一行一个，为了方便查看" required>{$vo.content|default=''}</textarea>
+        </label>
+        <div class="hr-line-dashed"></div>
+        {notempty name='vo.id'}<input name='id' type='hidden' value='{$vo.id}'>{/notempty}
+        <input name='uid' type='hidden' value="{:session('user.id')}">
+
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" type="submit">保存数据</button>
+            <button class="layui-btn layui-btn-danger" data-history-back data-confirm="确定要取消编辑吗？" type='button'>取消编辑</button>
+        </div>
+    </div>
+</form>
+<script>
+    $("#content").on('input',function(){
+   // $('#content').blur(function () {
+        let str=$(this).val();
+        let  url=$('#url').val()+'?';
+        str = str.replaceAll("\n", "&");
+        $("#ssyl").html(url+str)
+    });
+</script>
+{/block}

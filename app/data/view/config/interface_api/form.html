@@ -1,0 +1,116 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<form action="{:request()->url()}" autocomplete="off" class="layui-form layui-card" data-auto="true" method="post">
+    <div class="layui-card-body padding-40">
+        <div class="layui-row layui-col-space20">
+        <div class="layui-col-md6">
+            <label class="layui-form-item relative block">
+                <span class="color-green font-w7">接口名称</span>
+                <input class="layui-input" maxlength="50" name="name" placeholder="请输入接口名称" required value="{$vo.name|default=''}"/>
+                <span class="help-block"><b>必填，</b>请填写接口名称，支付名称尽量不要重复，字符不要太长一般4-6个汉字</span>
+            </label>
+
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-item relative block">
+                <span class="color-green font-w7">接口平台</span>
+                <select class='layui-select' lay-search name='type' required>
+                    <option value=""> -- 请选择接口名称 --</option>
+                    {foreach ['抖音','快手','积木鱼','广点通'] as $k => $v}
+                    {if isset($vo.type) and $vo.type eq $v}
+                    <option selected value='{$v}'>{$v}</option>
+                    {else}
+                    <option value='{$v}'>{$v}</option>
+                    {/if}
+                    {/foreach}
+                </select>
+                <span class="help-block"><b>必填，</b>请填写接口平台，比如抖音，快手，积木鱼</span>
+            </label>
+        </div>
+        <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">信息类型</span>
+            <select class='layui-select' lay-search name='tgtype' required>
+                <option value=""> -- 请选择接口名称 --</option>
+                {foreach ['信息流','搜索'] as $k => $v}
+                {if isset($vo.tgtype) and $vo.tgtype eq $v}
+                <option selected value='{$v}'>{$v}</option>
+                {else}
+                <option value='{$v}'>{$v}</option>
+                {/if}
+                {/foreach}
+            </select>
+            <span class="help-block"><b>必填，</b>搜索信息还是展示信息</span>
+        </label>
+        </div>
+            <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">数据周期</span>
+            <input class="layui-input" maxlength="50" name="cycledata" placeholder="请输入数据周期" required value="{$vo.cycledata|default=''}"/>
+            <span class="help-block"><b>必填，</b>当前拉取数据相隔多少时间，单位以小时</span>
+        </label>
+            </div>
+            <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">token/app_id</span>
+            <input class="layui-input" maxlength="50" name="token" placeholder="请输入数据周期" required value="{$vo.token|default=''}"/>
+            <span class="help-block"><b>必填，</b>token或者app_id，平台不一样，名称不一样</span>
+        </label>
+            </div>
+            <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">secret</span>
+            <input class="layui-input" maxlength="50" name="secret" placeholder="请输入secret" required value="{$vo.secret|default=''}"/>
+            <span class="help-block"><b>必填，</b>secret值</span>
+        </label>
+            </div>
+            <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">账号</span>
+            <input class="layui-input" maxlength="50" name="username" placeholder="请输入username"  value="{$vo.username|default=''}"/>
+            <span class="help-block"><b>必填，</b>账号,针对积木鱼平台，其它平台忽略</span>
+        </label>
+            </div>
+            <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">密码</span>
+            <input class="layui-input" maxlength="50" name="password" placeholder="请输入password"  value="{$vo.password|default=''}"/>
+            <span class="help-block"><b>必填，</b>账号,针对积木鱼平台，其它平台忽略</span>
+        </label>
+            </div>
+            <div class="layui-col-md6">
+
+        <label class="layui-form-item relative block">
+            <label class="color-green font-w7">3++编码</label>
+            <input class="layui-input" maxlength="50" name="bianma" placeholder="请输入3++编码" required value="{$vo.bianma|default=''}"/>
+            <span class="help-block"><b>必填，</b>对应3++的编码，可以在3++查询或者询问3++管理员</span>
+        </label>
+            </div>
+            <div class="layui-col-md6">
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">后缀标识</span>
+            <input class="layui-input" maxlength="50" name="hzurl" placeholder="请输入后缀标识" value="{$vo.hzurl|default=''}"/>
+            <span class="help-block"><b>必填，</b>后缀标识，主要用于识别平台，可填写或不填写</span>
+        </label>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        {notempty name='vo.id'}<input name='id' type='hidden' value='{$vo.id}'>{/notempty}
+         <div class="layui-form-item text-center">
+            <button class="layui-btn" type='submit'>保存数据</button>
+            <button class="layui-btn layui-btn-danger" data-confirm="确定要取消编辑吗？" data-history-back type='button'>取消编辑</button>
+        </div>
+
+    </div>
+
+</form>
+{/block}
+
+{block name='script'}
+<script>
+    (function () {
+        layui.form.render();
+    })();
+</script>
+{/block}

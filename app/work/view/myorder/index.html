@@ -1,0 +1,102 @@
+{extend name="../../admin/view/table"}
+{block name="button"}
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-open='{:url("order/add")}'>添加工单</button>
+
+<!--{/if}-->
+{/block}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='order/index_search'}
+    <ul class="layui-tab-title">
+        {foreach ['index'=>'收到工单','recycle'=>'提交工单'] as $k=>$v} {if isset($type) and $type eq $k}
+
+        <li class="layui-this" style="background:#009688; color:#fff;" data-open="{:url('index')}?type={$k}">{$v}</li>
+        {else}
+        <li data-open="{:url('index')}?type={$k}">{$v}</li>
+        {/if} {/foreach}
+    </ul>
+    <div class="layui-tab-content">
+        <table id="MyWordorder" data-url="{:sysuri('index')}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script>    $(function () {
+    $('#MyWordorder').layTable({
+        even: true,
+        height: 'full',
+        where: {type: '{$type|default="index"}'},
+        sort: {field: 'status asc,level desc,endtime asc', type: 'desc'},
+        cols: [[{checkbox: true}, {field: 'id', title: 'ID', width: 60, sort: true, align: 'center'}, {
+            field: 'title',
+            title: '工单名称',
+            width: 200
+        }, {field: 'miaoshu', title: '工单描述', width: 260}, {field: 'module', title: '物料模块', width: 80}, {
+            field: 'level',
+            title: '紧急程度',
+            width: 100,
+            sort: true,
+            align: 'center',
+            templet: function (d) {
+                if (d.level == 1) {
+                    return '<span style="color: #01AAED">紧急工单</span>'
+                } else if (d.level == 2) {
+                    return '<span style="color: #FF5722">特急工单</span>'
+                } else {
+                    return '<span style="color: #2F4056">常规工单</span>'
+                }
+            }
+        }, {field: 'num', title: '数量', width: 60, align: 'center'}, {
+            field: 'zzname',
+            title: '制作人',
+            width: 80,
+            align: 'center'
+        }, {field: 'tjname', title: '提交人', width: 80, align: 'center'}, {
+            field: 'endtime',
+            title: '截止日期',
+            width: 150,
+            align: 'center'
+        }, {field: 'create_at', title: '创建时间', width: 150}, {
+            field: 'finishtime',
+            title: '完成日期',
+            width: 150,
+            templet: function (d) {
+                if (d.finishtime == null) {
+                    return '<span style="color: #FF5722">未完成</span>'
+                } else {
+                    return d.finishtime
+                }
+            }
+        }, {
+            field: 'status', title: '工单状态', width: 100, sort: true, align: 'center', templet: function (d) {
+                if (d.status == 0) {
+                    return '<span style="color: #FF5722">未完成</span>'
+                } else {
+                    return '<span style="color: #5FB878">已完成</span>'
+                }
+            }
+        }, {toolbar: '#toolbar', title: '操作面板', minWidth: 250, align: 'center', fixed: 'right'}]]
+    });
+});</script>
+<script type="text/html" id="toolbar">
+    <!--{if auth("view")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-primary" data-dbclick data-open="{:url('order/view')}?id={{d.id}}"
+        data-title="查看工单">查看</a>
+    <!--{/if}-->
+    <!--{if auth("forward")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" data-dbclick data-open="{:url('order/forward')}?id={{d.id}}"
+        data-title="转发工单">转发</a>
+    <!--{/if}-->
+    <!-- {if isset($type) and $type eq 'recycle'}-->
+    <!--{if auth("edit")}-->
+<a class="layui-btn layui-btn-sm" data-dbclick data-open="{:url('order/edit')}?id={{d.id}}" data-title="编辑工单">编
+    辑</a>
+    <!--{/if}-->
+    <!--{if auth('remove')}-->
+    <a data-action='{:url("order/remove")}' data-value="id#{{d.id}}" data-confirm="确认要删除这条记录吗？" class="layui-btn layui-btn-sm layui-btn-danger">删
+    除</a>
+    <!--{/if}-->
+    <!--{/if}-->
+</script>
+{/block}

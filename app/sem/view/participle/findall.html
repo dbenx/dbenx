@@ -1,0 +1,68 @@
+{extend name="../../admin/view/main"}
+
+{block name="button"}
+
+{/block}
+
+{block name='content'}
+
+<div class="think-box-shadow">
+    <fieldset>
+        <legend>提示信息</legend>
+        <div class="layui-form layui-form-pane form-search" >
+            <div class="layui-form-item layui-inline">
+                <label class="layui-input-inline">
+                    分词已完成：本次共计用时间：<font color="red"> {$execution_time}</font> 秒，共计<font color="red">{$total['allkeywords']??0} </font>个词，匹配账户计划 <font color="red"> {$total['jhnum']??0} </font> 个，匹配单元 <font color="red">{$total['unitnum']??0}</font> 个,还剩下 <font color="red">{$total['noall']??0}</font> 个关键词未分配
+                </label>
+            </div>
+        </div>
+    </fieldset>
+
+    <ul class="layui-tab-title">
+        {foreach ['unit'=>'单元未分配','pid'=>'计划未分配','noall'=>'全部未分配','all'=>'已 分 配'] as $k=>$v} {if isset($type) and $type eq $k}
+        <li class="layui-this" style="background: #098; color: #fff;" data-open="{:url('findall')}?type={$k}">{$v}<sup class="layui-badge border-radius">{$total[$k]??0}</sup></li>
+        {else}
+        <li data-open="{:url('findall')}?type={$k}">{$v}<sup class="layui-badge border-radius">{$total[$k]??0}</sup></li>
+        {/if}
+       {/foreach}
+    </ul>
+
+    <div class="layui-tab-content">
+
+        <div class="layui-tab-content">
+            <table class="layui-table margin-top-10" lay-skin="line">
+                {notempty name='list'}
+                <thead>
+                <tr>
+                    <th class='list-table-check-td think-checkbox'>
+                        <label><input data-auto-none data-check-target='.list-check-box' type='checkbox'></label>
+                    </th>
+                    <th>ID</th>
+                    <th>关键词</th>
+                    <th>计划</th>
+                    <th>单元</th>
+                </tr>
+                </thead>
+                {/notempty}
+                <tbody>
+                {foreach $list as $key=>$vo}
+                <tr>
+                    <td class='list-table-check-td think-checkbox'>
+                        <label><input class="list-check-box" type='checkbox' value='{$vo.id}'></label>
+                    </td>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.keywords}</td>
+                    <td>{$vo.pid}</td>
+                    <td> <!--{if  $vo.unitid neq 0}-->{$vo.unitid}<!--{else}-->未分配单元<!--{/if}--></td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+        </div>
+    </div>
+</div>
+{/block}
+
+
+{/block}

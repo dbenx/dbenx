@@ -1,0 +1,61 @@
+<fieldset>
+    <legend>匹配规则</legend>
+    <div class="layui-form-item layui-inline">
+        <p>注：如需要清空数据，请点击右上角清空数据按钮，清空的数据将无法恢复，请紧慎操作！</p>
+        <p>当前关键词数:<strong style="color: red">{$allkeyword}</strong> 个，剩余关键词数:<strong style="color: red">{$Notkeyword}</strong>个</p>
+    </div>
+    <form action='{:url("find")}' autocomplete="off" class="layui-form layui-form-pane form-search" method="get" onsubmit="return false">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">计划规则</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="id">
+                    <option value=''>-- 全部 --</option>
+                    {if isset($kcon)}
+                    {foreach $kcon as $k=>$v}
+                    {if $v.id.'' eq input('id')}
+                    <option selected value="{$v.id}">{$v.title}</option>
+                    {else}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/if}{/foreach}
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 开始匹配</button>
+        </div>
+    </form>
+
+    <form action='{:url("ufind")}' autocomplete="off" class="layui-form layui-form-pane form-search" method="get" onsubmit="return false">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">单元规则</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="unitid">
+                    <option value=''>-- 全部 --</option>
+                    {if isset($units)}
+                    {foreach $units as $k=>$v}
+                    {if $v.id.'' eq input('id')}
+                    <option selected value="{$v.id}">{$v.title}</option>
+                    {else}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/if}{/foreach}
+                    {/if}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 开始匹配</button>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <button type="button" data-form-export="{:request()->url()}" class="layui-btn layui-btn-primary">
+                <i class="layui-icon layui-icon-export"></i>导出数据
+            </button>
+        </div>
+    </form>
+
+
+</fieldset>
+<script>
+    window.form.render()
+</script>

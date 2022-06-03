@@ -1,0 +1,80 @@
+
+{extend name='../../admin/view/table'}
+{block name="button"}
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-open='{:url("add")}'>接口配置</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-action='{:url("remove")}' data-confirm="确定要删除这些删除吗？" data-rule="id#{key}">接口删除</button>
+<!--{/if}-->
+
+{/block}
+{block name='content'}
+<div class="think-box-shadow">
+    {include file='config/interface_api/index_search'}
+    <table id="QueueData" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#QueueData').layTable({
+            even: true,
+            sort: {field: 'id desc', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: 'left'},
+                {field: 'id', title: '编号', width: 80, sort: true,align: 'center'},
+                {field: 'name', title: '账户名称', minWidth: 80},
+                {field: 'type', title: '平台名称', minWidth: 100},
+                {field: 'tgtype', title: '平台类型', minWidth: 80},
+                {field: 'cycledata', title: '数据周期', width: 80,align: "center",templet: "<div>{{d.cycledata}} 小时</div>"},
+                {field: 'token', title: 'token/app_id', minWidth: 200},
+                {field: 'secret', title: 'secret', minWidth: 200},
+                {field: 'username', title: '用户名', minWidth: 100},
+                {field: 'password', title: '密码', minWidth: 100},
+                {field: 'bianma', title: '3++编码', minWidth: 100},
+                {field: 'hzurl', title: 'URL后缀', minWidth: 100},
+                {
+                    field: 'status', title: '状态', minWidth: 100, templet: function (d) {
+                        if (d.status == 1) {
+                            return '<b class="color-blue">已启动</b>';
+                        } else {
+                            return '<b class="color-desc">未启动</b>';
+                        }
+                    }
+                },
+                {field: 'create_at', title: '创建时间', align: 'center', minWidth: 170},
+                {toolbar: '#toolbar', title: '操作面板', align: 'center', width: 260, fixed: 'right',}
+            ]]
+        });
+    });
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth('edit')}-->
+    <a class='layui-badge layui-bg-blue'  data-open='{:url("edit")}?id={{d.id}}'>
+        <i class="layui-icon font-s12">&#xe642;</i>
+    </a>
+    <!--{/if}-->
+
+    <!--{if auth('remove')}-->
+    <a class='layui-badge layui-bg-red' data-confirm="确定要删除该任务吗？" data-action='{:url("remove")}' data-value="id#{{d.id}}">
+        <i class="layui-icon font-s12">&#xe640;</i>
+    </a>
+    <!--{/if}-->
+
+    <a class='layui-badge layui-bg-gray' data-confirm="确定要拉取数据吗？" data-action='data/api.feiyu/getData' data-value="id#{{d.id}}">
+        <span class="layui-badge layui-bg-black">拉取数据</span>
+        <span class="layui-badge think-bg-gray"><i class="layui-icon font-s12">&#xe669;</i></span>
+    </a>
+
+    <!--{if auth("queue")}-->
+    <a class='layui-badge layui-bg-orange margin-0' data-queue="{:url('queue')}?id={{d.id}}" data-value="id#{{d.id}}">
+        <i class="layui-icon font-s12">&#xe705;</i>
+    </a>
+    <!--{/if}-->
+
+</script>
+{/block}

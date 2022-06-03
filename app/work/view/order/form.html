@@ -1,0 +1,130 @@
+{extend name="../../admin/view/main"}
+
+{block name='content'}
+<form action="{:request()->url()}" autocomplete="off" class="layui-form layui-card" data-auto="true" method="post">
+    <div class="layui-card-body padding-40 padding-bottom-20">
+
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">工单名称</span>
+            <span class="color-desc margin-left-5">Order Title</span>
+            <input class="layui-input" name="title" placeholder="请输入工单名称" required value='{$vo.title|default=""}'>
+        </label>
+
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <label class="layui-form-item relative block">
+                        <span class="color-green font-w7">制作人</span>
+                        <span class="color-desc margin-left-5">Order Zzname</span>
+                        <select class='layui-select' lay-search name='zzname' required>
+                            <option  value=''>请选择制作人</option>
+                            {foreach $zznames as $zzname}
+                                {if isset($vo.zzname) and $vo.zzname eq $zzname.id}
+                                <option selected value='{$zzname.id}'>{$zzname.nickname}</option>
+                                {else}
+                                <option value="{$zzname.id}">{$zzname.nickname}</option>
+                                {/if}}
+                            {/foreach}
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="layui-col-xs4">
+                <div class="grid-demo">
+                    <label class="layui-form-item relative block">
+                    <span class="color-green font-w7">制作数量</span>
+                    <span class="color-desc margin-left-5">Order Num</span>
+                    <input class="layui-input" name="num" placeholder="完成时间" required value='{$vo.num|default="1"}'>
+                </label>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <label class="layui-form-item relative block">
+                        <span class="color-green font-w7">工单紧急程度</span>
+                        <span class="color-desc margin-left-5">Order Level</span>
+                        <select class='layui-select' lay-search name='level' required>
+                            {foreach ['常规工单','紧急工单','特急工单'] as $k => $v}
+                                {if isset($vo.level) and $vo.level eq $k}
+                                    <option selected value='{$k}'>{$v}</option>
+                                {else}
+                                    <option value='{$k}'>{$v}</option>
+                                {/if}
+                           {/foreach}
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="layui-col-xs4">
+                <div class="grid-demo"><label class="layui-form-item relative block">
+                    <span class="color-green font-w7">完成时间</span>
+                    <span class="color-desc margin-left-5">Order Endtime</span>
+                    <input type="text" name="endtime" id="endtime" autocomplete="off" class="layui-input" placeholder="请选择完成时间"  required value='{$vo.endtime|default=""}'>
+                </label>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <label class="layui-form-item relative block">
+                        <span class="color-green font-w7">物料所属模块</span>
+                        <span class="color-desc margin-left-5">Order Module</span>
+                        <select class='layui-select' lay-search name='module' required>
+                            <option value=""> -- 请选择物料模块 --</option>
+                            {foreach ['百度物料','抖音物料','网站物料','视频拍摄物料','视频剪辑物料','搜狗物料','神马物料','快手物料','直播物料','其它物料'] as $k => $v}
+                            {if isset($vo.module) and $vo.module eq $v}
+                            <option selected value='{$v}'>{$v}</option>
+                            {else}
+                            <option value='{$v}'>{$v}</option>
+                            {/if}
+                            {/foreach}
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <label class="layui-form-item relative block">
+            <span class="color-green font-w7">工单描述</span>
+            <span class="color-desc margin-left-5">Order Miaoshu</span>
+            <textarea class="layui-textarea" name="miaoshu" placeholder="请输入简介描述" required>{$vo.miaoshu|default=''}</textarea>
+        </label>
+
+
+        <div class="layui-form-item relative block">
+            <span class="color-green font-w7 label-required-prev">工单详细说明</span>
+            <span class="color-desc margin-left-5">Order Content</span>
+            <label class="relative block">
+                <textarea class="layui-textarea" name="content" placeholder="工单详细说明">{$vo.content|default=''}</textarea>
+            </label>
+        </div>
+
+        <div class="hr-line-dashed"></div>
+        <input name='tjname' type='hidden' value="{:session('user.id')}">
+        {notempty name='vo.id'}<input name='id' type='hidden' value='{$vo.id}'>{/notempty}
+        {notempty name='vo.code'}<input name='code' type='hidden' value='{$vo.code}'>{/notempty}
+
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" type="submit">保存数据</button>
+            <button class="layui-btn layui-btn-danger" data-history-back data-confirm="确定要取消编辑吗？" type='button'>取消编辑</button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    window.form.render();
+    laydate.render({
+        elem: '#endtime',
+        type: 'datetime'
+        ,min: 0 //7天前
+    });
+    require(['ckeditor'], function () {
+        window.createEditor('[name=content]', {height: 300});
+    });
+</script>
+{/block}

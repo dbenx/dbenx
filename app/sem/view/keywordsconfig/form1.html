@@ -1,0 +1,78 @@
+<form class="layui-form layui-card" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+    <div class="layui-card-body">
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">上级名称</label>
+            <div class="layui-input-block">
+                <select name='pid' class='layui-select' lay-search>
+                    {foreach $menus as $menu}{eq name='menu.id' value='$vo.pid|default=0'}
+                    <option selected value='{$menu.id}'>{$menu.spl|raw}{$menu.title}</option>
+                    {else}
+                    <option value='{$menu.id}'>{$menu.spl|raw}{$menu.title}</option>
+                    {/eq}{/foreach}
+                </select>
+                <p class="help-block"><b>必选</b>，请选择上级或顶级菜单（目前最多支持三级）</p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类名称</label>
+            <div class="layui-input-block">
+                <input name="title" value='{$vo.title|default=""}' required placeholder="请输入计划名称" class="layui-input">
+                <p class="help-block"><b>必选</b>，请填写名称（如：品牌，专业），建议字符不要太长，一般4-6个汉字</p>
+            </div>
+        </div>
+
+
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">匹配规则</label>
+            <div class="layui-input-block">
+                {if isset($vo.match)}
+                <input type="radio" name="match" value="1" title="包含"  {eq name='$vo.match' value='1'}checked{/eq}>
+                <input type="radio" name="match" value="2" title="不包含" {eq name='$vo.match' value='2'}checked{/eq}>
+                <input type="radio" name="match" value="3" title="等于" {eq name='$vo.match' value='3'}checked{/eq}>
+                <input type="radio" name="match" value="4" title="不等于" {eq name='$vo.match' value='4'}checked{/eq}>
+                <input type="radio" name="match" value="5" title="开始于" {eq name='$vo.match' value='5'}checked{/eq}>
+                <input type="radio" name="match" value="6" title="截止于" {eq name='$vo.match' value='6'}checked{/eq}>
+                {else}
+                <input type="radio" name="match" value="1" title="包含" checked>
+                <input type="radio" name="match" value="2" title="不包含">
+                <input type="radio" name="match" value="3" title="等于">
+                <input type="radio" name="match" value="4" title="不等于">
+                <input type="radio" name="match" value="5" title="开始于">
+                <input type="radio" name="match" value="6" title="截止于">
+                {/if}
+
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">匹配词根</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="rootword"  rows="15"  placeholder="请输入词根">{$vo.rootword|default=''}</textarea>
+                <p class="help-block">词根，一行一个</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    <input type='hidden' value="{:session('user.id')}" name='uid'>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+
+{block name='script'}
+<script>
+    layui.form.render();
+    require(['jquery.autocompleter'], function () {
+
+
+    });
+</script>
+{/block}

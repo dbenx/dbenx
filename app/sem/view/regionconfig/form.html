@@ -1,0 +1,31 @@
+<form class="layui-form layui-card" id="AuthForm" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body padding-left-40">
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>名称</b>Name</span>
+            <input maxlength="100" class="layui-input" name="title" value='{$vo.title|default=""}' required placeholder="请输入名称">
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>本地地域</b>Regionalwords</span>
+            <textarea placeholder="请输入本地地域"  class="layui-textarea" name="regionalwords">{$vo.regionalwords|default=""}</textarea>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>外地地域名</b>Wregionalwords</span>
+            <textarea placeholder="请输外个地地域" class="layui-textarea" name="wregionalwords">{$vo.wregionalwords|default=""}</textarea>
+        </label>
+
+
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    <input type='hidden' value="{:session('user.id')}" name='uid'>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

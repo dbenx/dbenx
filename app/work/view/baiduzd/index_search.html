@@ -1,0 +1,68 @@
+<fieldset>
+    <legend>条件搜索</legend>
+    <form action="{:request()->url()}" autocomplete="off" class="layui-form layui-form-pane form-search" method="get" onsubmit="return false">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">链接</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" name="url" placeholder="请输入标题名称" value="{$get.url|default=''}">
+            </label>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">标题</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" name="title" placeholder="请输入标题名称" value="{$get.title|default=''}">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">回答用户</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" name="username" placeholder="请输入回答用户" value="{$get.username|default=''}">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">标记</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="status">
+                    <option value=''>-- 全部 --</option>
+                    {foreach ['回收站', '未标记','已上交','已回答','已采纳','被折叠','链接被删除','回答被删除'] as $k=>$v}
+                    {if $k.'' eq input('status')}
+                    <option selected value="{$k}">{$v}</option>
+                    {else}
+                    <option value="{$k}">{$v}</option>
+                    {/if}
+                    {/foreach}
+
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">创建时间</label>
+            <label class="layui-input-inline">
+                <input class="layui-input" data-date-range name="create_at" placeholder="请选择创建时间" value="{$get.create_at|default=''}">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button type="submit" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+            <button type="button" data-form-export="{:url('index')}" class="layui-btn layui-btn-primary">
+                <i class="layui-icon layui-icon-export"></i> 导 出
+            </button>
+        </div>
+    </form>
+
+</fieldset>
+<script>
+    window.form.render()
+    require(['excel'], function (excel) {
+        excel.bind(function (data) {
+            data.forEach(function (item, index) {
+                data[index] = [item.id, item.url, item.title,item.username];
+            });
+            data.unshift(['ID', 'url', '标题','回答用户']);
+            return data;
+        }, '知道链接');
+    });
+</script>

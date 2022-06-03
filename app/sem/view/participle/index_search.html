@@ -1,0 +1,234 @@
+<fieldset>
+    <legend>信息面板</legend>
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <fieldset class="layui-field-title" style="margin-bottom: 0px;">
+                <legend class="color-red">提示</legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <p>注：如需要清空数据，请点击右上角清空数据按钮，清空的数据将无法恢复，请紧慎操作！</p>
+                <p>共计<font color="red">{$total['allkeywords']??0} </font>个词，匹配账户计划 <font color="red">
+                    {$total['jhnum']??0} </font>
+                    个，匹配单元 <font color="red">{$total['unitnum']??0}</font> 个,还剩下 <font
+                            color="red">{$total['noall']??0}</font>
+                    个关键词未分配</p>
+            </div>
+
+        </div>
+        <div class="layui-col-md5 layui-col-md-offset1" >
+            <fieldset class="layui-field-title" style="margin-bottom: 0px;">
+                <legend class="color-red">搜索</legend>
+            </fieldset>
+            <form class="layui-form layui-form-pane form-search" action="{:sysuri()}" onsubmit="return false"
+                  method="get"
+                  autocomplete="off">
+                <div class="layui-form-item layui-inline">
+                    <label class="layui-form-label">关键词</label>
+                    <label class="layui-input-inline" style="width: 300px;">
+                        <input class="layui-input" name="keywords" placeholder="请输入关键词"
+                               value="{$get.keywords|default=''}">
+                    </label>
+                </div>
+                <div class="layui-form-item layui-inline">
+                    <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <fieldset class="layui-field-title" style="margin-bottom: 0px;">
+        <legend class="color-red">分词</legend>
+    </fieldset>
+
+    <form class="layui-form layui-form-pane form-search" lay-filter="example" action='{:url()}' data-auto="true"
+          method="post"
+          autocomplete="off">
+        <div class="layui-row">
+            <div class="layui-col-md9">
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">计划规则</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="id">
+                        <option value=''>-- 未选择 --</option>
+                        {if isset($kcon)}
+                        {foreach $kcon as $k=>$v}
+                        {if $v.id.'' eq input('id')}
+                        <option selected value="{$v.id}">{$v.title}</option>
+                        {else}
+                        <option value="{$v.id}">{$v.title}</option>
+                        {/if}{/foreach}
+                        {/if}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">单元规则</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="unitid">
+                        <option value=''>-- 未选择 --</option>
+                        {if isset($units)}
+                        {foreach $units as $k=>$v}
+                        {if $v.id.'' eq input('id')}
+                        <option selected value="{$v.id}">{$v.title}</option>
+                        {else}
+                        <option value="{$v.id}">{$v.title}</option>
+                        {/if}{/foreach}
+                        {/if}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">地域规则</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="regionid">
+                        <option value=''>-- 未选择 --</option>
+                        {if isset($region)}
+                        {foreach $region as $k=>$v}
+                        {if $v.id.'' eq input('id')}
+                        <option selected value="{$v.id}">{$v.title}</option>
+                        {else}
+                        <option value="{$v.id}">{$v.title}</option>
+                        {/if}{/foreach}
+                        {/if}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <button type="button" class="layui-btn layui-btn-primary" id="LAY-component-form-getval"><i
+                        class="layui-icon">&#xe615;</i> 开始分词
+                </button>
+            </div>
+        </div>
+            <div class="layui-col-md3">
+                <div class="layui-form-item layui-inline" style="float: right">
+                    <!--{if auth("import")}-->
+                    <button type="button" class='layui-btn layui-btn-sm layui-btn-primary' data-file data-type="xlsx,xls"
+                            data-uptype='local' data-field="topic_excel"><i class="layui-icon">&#xe681;</i>导入数据
+                    </button>
+                    <!--{/if}-->
+                    <!--{if auth("remove")}-->
+                    <button type="button" class='layui-btn layui-btn-sm  layui-btn-primary layui-border-red'
+                            data-action='{:url("remove")}'
+                            data-value="id#0"
+                            data-confirm="确定要删除这些删除吗？"><i class="layui-icon">&#xe640;</i>清空数据
+                    </button>
+                    <!--{/if}-->
+                    <!--{if auth("clear")}-->
+                    <button type="button" class='layui-btn layui-btn-sm layui-btn-primary layui-border-black'
+                            data-action='{:url("clear")}'
+                            data-value="id#0"
+                            data-confirm="确定要清空所有分配吗？"><i class="layui-icon">&#xe642;</i>清空分配
+                    </button>
+                    <!--{/if}-->
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <fieldset class="layui-field-title" style="margin-bottom: 0px;">
+        <legend class="color-red">数据导出设置</legend>
+    </fieldset>
+
+    <form class="layui-form layui-form-pane form-search" action="{:sysuri()}" onsubmit="return false" method="get"
+          autocomplete="off">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">匹配模式</label>
+            <label class="layui-input-inline">
+                <select name="matchpattern" id="matchpattern" class="layui-select">
+                    <option value=''>-- 未设置 --</option>
+                    <option selected value='短语匹配'>短语匹配</option>
+                    <option value='智能匹配'>智能匹配</option>
+                    <option value='精确匹配'>精确匹配</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">出价</label>
+            <label class="layui-input-inline">
+                <input name="offer" id="offer" value="{$get.offer|default='1.00'}" placeholder="出价" class="layui-input">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">访问URL</label>
+            <label class="layui-input-inline">
+                <input name="pcurl" value="{$get.pcurl|default=''}" placeholder="访问URL 包含http" class="layui-input">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">移动URL</label>
+            <label class="layui-input-inline">
+                <input name="murl" value="{$get.murl|default=''}" placeholder="移动URL 包含http" class="layui-input">
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">状态</label>
+            <label class="layui-input-inline">
+                <select name="status" id="status" class="layui-select">
+                    <option value=''>-- 未设置 --</option>
+                    <option selected value="启用">启用</option>
+                    <option value="暂停">暂停</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">URL后辍</label>
+            <label class="layui-input-inline">
+                <select name="suffix" id="suffix" class="layui-select">
+                    <option value=''>-- 未选择 --</option>
+                    {if isset($urlsuffix)}
+                    {foreach $urlsuffix as $k=>$v}
+                    {if $v.id.'' eq input('id')}
+                    <option selected value="{$v.id}" data-url="{$v.url}" data-urlhz="{$v.urlhz}">{$v.title}</option>
+                    {else}
+                    <option value="{$v.id}" data-url="{$v.url}" data-urlhz="{$v.content}">{$v.title}</option>
+                    {/if}{/foreach}
+                    {/if}
+                </select>
+            </label>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button type="button" data-form-export="{:url('export')}" class="layui-btn layui-btn-primary">
+                <i class="layui-icon layui-icon-export"></i>导出数据
+            </button>
+        </div>
+    </form>
+</fieldset>
+<script>
+    layui.$('#LAY-component-form-getval').on('click', function () {
+        var data = form.val('example');
+        let id = data.id;//计划ID
+        let unitid = data.unitid;//单元ID
+        let regionid = data.regionid;//地域ID
+        if (!id) {
+            layer.msg('请选择计划规则！');
+            return;
+        } else if (!unitid) {
+            layer.msg('请选择单元规则！');
+            return;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', '{:url("fcrw")}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send("id=" + id + "&unitid=" + unitid + "&regionid=" + regionid + "&uid={:session('user.id')}");
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var text = xhr.responseText;
+                var response = JSON.parse(text);
+                if (response.code === 1) {
+                    $.loadQueue(response.data)
+                }
+                console.log(response.code)
+            } else {
+                console.log(xhr)
+            }
+        };
+    });
+    window.form.render()
+</script>

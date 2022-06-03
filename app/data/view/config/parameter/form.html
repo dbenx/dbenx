@@ -1,0 +1,40 @@
+<form class="layui-form layui-card" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body padding-left-40">
+
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>名称</b></span>
+            <input maxlength="50" class="layui-input" name="name" value='{$vo.name|default=""}' required placeholder="请输入编码名称">
+            <span class="help-block">请输入编码名称，自定义项，方便区分记忆</span>
+        </label>
+
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>识别字符</b></span>
+            <input maxlength="100" class="layui-input" name="value" value='{$vo.value|default=""}' required placeholder="请输入匹配字符">
+            <span class="help-block">请输入匹配字符，</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>3++编码</b></span>
+            <input maxlength="100" class="layui-input" name="bianma" value='{$vo.bianma|default=""}' required placeholder="请输入3++编码">
+            <span class="help-block">请输入3++对应的编码，</span>
+        </label>
+
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>分类</b></span>
+            <input maxlength="100" class="layui-input" name="type" value='{$vo.type|default=""}' required placeholder="请输入分类">
+        </label>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+
+</form>
