@@ -1,0 +1,122 @@
+{extend name="../../admin/view/main"}
+{block name='content'}
+<div class="think-box-shadow table-block">
+    <fieldset>
+        <legend>操作面板</legend>
+        <div class="layui-form-item layui-inline">
+            <button type="button" class="layui-btn" lay-demotransferactive="getData">开始替换</button>
+        </div>
+    </fieldset>
+    <div class="layui-row layui-col-space10">
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md6">
+                <label class="layui-form-item relative block">
+                    <span class="help-label">关键词</span>
+                    <textarea placeholder="请输入关键词" rows="10" class="layui-textarea" id="kwd"></textarea>
+                </label>
+            </div>
+
+            <div class="layui-col-md6">
+                <label>结果</label>
+                <textarea class="layui-textarea" rows="10" readonly id="jgkwd"></textarea>
+            </div>
+        </div>
+        <hr class="layui-border-green">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <label>替换地区</label>
+                <div>
+                    <div id="test5" class="demo-transfer"></div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <label>目标地区</label>
+                <div id="test2" class="demo-transfer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['transfer','layer', 'util'], function () {
+        var $ = layui.$
+            , transfer = layui.transfer
+            , layer = layui.layer
+            , util = layui.util;
+        var datacc = {$Region | raw};
+
+
+        transfer.render({
+            elem: '#test5'
+            , showSearch: true
+            , parseData: function (res) {
+                return {
+                    "value": res.id //数据值
+                    , "title": res.title //数据标题
+                }
+            }
+            , title: ['未选择地区', '已选择地区']  //自定义标题
+            , data: datacc
+            , id: 'thkey' //定义唯一索引
+            , height: 500
+        })
+        transfer.render({
+            elem: '#test2'
+            , showSearch: true
+            , parseData: function (res) {
+                return {
+                    "value": res.id //数据值
+                    , "title": res.title //数据标题
+                }
+            }
+            , title: ['未选择地区', '已选择地区']  //自定义标题
+            , data: datacc
+            , id: 'mbkey' //定义唯一索引
+            , height: 500
+        })
+
+
+        //批量办法定事件
+        util.event('lay-demoTransferActive', {
+            getData: function (othis) {
+                var thkey = transfer.getData('thkey'); //获取右侧数据
+                var mbkey = transfer.getData('mbkey'); //获取右侧数据
+                cc(thkey, mbkey)
+            },
+
+        });
+    });
+
+    function cc(thkey, mbkey) {
+        var kwd = $("#kwd").val();
+        if (!kwd) {
+            layer.msg("关键词为空，请输入关键词");
+            return;
+        }
+        if (thkey.length === 0) {
+            layer.msg('替换地区未选择数据！');
+            return;
+        }
+        if (mbkey.length === 0) {
+            layer.msg('目标地区未选择数据！');
+            return;
+        }
+
+        layer.load(); //上传loading
+        if (thkey.length != 0) {
+            thkey.forEach((elem, index) => {
+                console.log(elem.title, index);
+                kwd = kwd.replace(new RegExp(elem.title, 'g'), mbkey[0]['title']);
+                console.log(kwd);
+            });
+        }
+        layer.closeAll('loading'); //关闭loading
+        $("#jgkwd").val(kwd);
+        layer.msg("任务已完成！");
+    }
+
+</script>
+
+{/block}

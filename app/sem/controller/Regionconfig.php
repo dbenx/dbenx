@@ -6,11 +6,21 @@ use app\sem\model\SemRegionConfig;
 use app\sem\model\SemUnitConfig;
 use think\admin\Controller;
 use think\admin\helper\QueryHelper;
-
+/**
+ * 地域词设置
+ * @auth true  # 表示需要验证权限
+ * @menu true  # 添加系统菜单节点
+ * @login true # 强制登录才可访问
+ */
 class Regionconfig extends  Controller
 {
+    /**
+     * 地域词管理
+     * @auth true  # 表示需要验证权限
+     * @menu true  # 添加系统菜单节点
+     * @login true # 强制登录才可访问
+     */
     public  function index(){
-
         SemRegionConfig::mQuery()->layTable(function () {
             $this->title = '地域词管理';
         }, function (QueryHelper $query) {

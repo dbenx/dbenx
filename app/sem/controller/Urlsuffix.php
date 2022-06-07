@@ -7,9 +7,18 @@ use think\admin\Controller;
 use think\admin\helper\QueryHelper;
 /**
  * URL 后辍设置
+ * @auth true  # 表示需要验证权限
+ * @menu true  # 添加系统菜单节点
+ * @login true # 强制登录才可访问
  */
 class Urlsuffix extends Controller
 {
+    /**
+     * URL后辍管理
+     * @auth true  # 表示需要验证权限
+     * @menu true  # 添加系统菜单节点
+     * @login true # 强制登录才可访问
+     */
     public  function index(){
         SemUrlsuffixConfig::mQuery()->layTable(function () {
             $this->title = 'URL后辍管理';

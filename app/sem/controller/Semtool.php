@@ -2,6 +2,7 @@
 
 namespace app\sem\controller;
 
+use app\sem\model\BaseRegion;
 use think\admin\Controller;
 
 /**
@@ -65,7 +66,14 @@ class Semtool extends Controller
         $this->fetch('index');
     }
 
-    public  function  columntorow(){
+    /**
+     * 地域词替换
+     * @auth true  # 表示需要验证权限
+     * @menu true  # 添加系统菜单节点
+     * @login true # 强制登录才可访问
+     */
+    public  function wdreplace(){
+        $this->Region=json_encode(BaseRegion::mk()->column('id,title'));
         $this->fetch();
     }
 }

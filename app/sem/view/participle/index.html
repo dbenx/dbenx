@@ -133,13 +133,18 @@
 
             if (pcurl != '') {
                 pcurl = pcurl + "?" + hzurl;
-            } else {
+            }else if(suffixurl!=undefined){
                 pcurl = suffixurl + "?" + hzurl;
+            }else {
+                pcurl ='';
             }
             if (murl != '') {
                 murl = murl + "?" + hzurl;
-            } else {
+            }else if(suffixurl!=undefined){
                 murl = suffixurl + "?" + hzurl;
+            }
+            else {
+                murl = '';
             }
 
             data.forEach(function (item, index) {
