@@ -9,6 +9,8 @@ class BaiDu extends Controller
     public function index()
     {
         echo '百度数据汇总！';
+
     }
+
 
 }

@@ -1,7 +1,17 @@
-{extend name="../../admin/view/full"}
+{extend name="../../admin/view/main"}
+{block name="button"}
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-modal='{:url("add")}'>添加信息</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key};deleted#1"  data-confirm="确定批量删除记录吗？" class='layui-btn layui-btn-sm layui-btn-primary'>批量删除</button>
+<!--{/if}-->
+
+{/block}
 {block name='content'}
-<div class="iframe-pagination">
-    {include file='news/mark/index_search'}
+<div class="think-box-shadow">
+    {include file='dispose/channel/index_search'}
     <table class="layui-table margin-top-10" lay-skin="line">
         {notempty name='list'}
         <thead>
@@ -12,8 +22,8 @@
             <th class='list-table-sort-td'>
                 <button class="layui-btn layui-btn-xs" data-reload type="button">刷 新</button>
             </th>
-            <th class="text-left nowrap">标签名称</th>
-            <th class="text-left nowrap">标签状态</th>
+            <th class="text-left nowrap">渠道名称</th>
+            <th class="text-left nowrap">状态</th>
             <th class="text-left nowrap">创建时间</th>
             <th class="text-left nowrap"></th>
         </tr>
@@ -33,7 +43,7 @@
             <td class="text-left nowrap">{$vo.create_at|format_datetime}</td>
             <td class='text-left nowrap'>
                 <!--{if auth("edit")}-->
-                <a class="layui-btn layui-btn-sm" data-dbclick data-modal="{:url('edit')}?id={$vo.id}" data-title="编辑标签" data-width="500px">编 辑</a>
+                <a class="layui-btn layui-btn-sm" data-dbclick data-modal="{:url('edit')}?id={$vo.id}" data-title="编辑渠道">编 辑</a>
                 <!--{/if}-->
 
                 <!--{if auth("state") and $vo.status eq 1}-->
@@ -53,11 +63,7 @@
         </tbody>
     </table>
     {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
-    <!--{if auth("add")}-->
-    <div class="fixed" style="bottom:5px;right:10px">
-        <button class='layui-btn layui-btn-sm' data-modal='{:url("add")}' data-title="添加标签" data-width="500px" type="button">添加标签</button>
-    </div>
-    <!--{/if}-->
+
 </div>
 {/block}
 

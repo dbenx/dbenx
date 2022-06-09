@@ -8,7 +8,8 @@
             <label><input readonly value="{$vo.type|default=''}" class="layui-input think-bg-gray"></label>
             {else}
             <select class="layui-select" lay-filter="DataType">
-                {foreach $types as $type}{if (isset($vo.type) and $type eq $vo.type) or ($type eq input('get.type'))}
+                {foreach $types as $type}
+                {if (isset($vo.type) and $type eq $vo.type) or ($type eq input('get.type'))}
                 <option selected value="{$type}">{$type}</option>
                 {else}
                 <option value="{$type}">{$type}</option>
