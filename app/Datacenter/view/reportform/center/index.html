@@ -1,0 +1,156 @@
+{extend name="../../admin/view/main"}
+
+
+{/block}
+{block name='content'}
+
+<div class="think-box-shadow">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend class="font-s16">分类数据</legend>
+    </fieldset>
+    <div class="layui-tab layui-tab-card">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="11">媒体分类</li>
+            <li lay-id="">渠道分类</li>
+            <li lay-id="">账户分类</li>
+            <li lay-id="">付费分类</li>
+        </ul>
+        <!--媒体分类-->
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                {foreach $media as $k=>$v}
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>{$v|media}</legend>
+                </fieldset>
+                <div class="layui-row layui-col-space15 portal-block-container notselect">
+                    {foreach $list as $key=>$vo}
+                    {if $vo.media eq $v}
+                    <div class="layui-col-sm4 layui-col-md4 layui-col-lg3">
+                        <div class="pointer" data-open="/data/base.pager/edit.html?type=2222">
+                            <div class="portal-block-item nowrap think-bg-blue">
+                                <div class="font-s18">账户名：{$vo.name}</div>
+                                <div class="font-s14">所属人：{$vo.userid|username}</div>
+                            </div>
+                            <i class="portal-block-icon layui-icon layui-icon-edit"></i>
+                        </div>
+                    </div>
+                    {/if}
+                    {/foreach}
+                </div>
+                {/foreach}
+            </div>
+            <!--渠道分类-->
+            <div class="layui-tab-item">
+                {foreach $channel as $k=>$v}
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>{$v|channel}</legend>
+                </fieldset>
+                <div class="layui-row layui-col-space15 portal-block-container notselect">
+                    {foreach $list as $key=>$vo}
+                    {if $vo.channel eq $v}
+                    <div class="layui-col-sm4 layui-col-md4 layui-col-lg3">
+                        <div class="pointer" data-open="/data/base.pager/edit.html?type=2222">
+                            <div class="portal-block-item nowrap think-bg-blue">
+                                <div class="font-s18">账户名：{$vo.name}</div>
+                                <div class="font-s14">所属人：{$vo.userid|username}</div>
+                            </div>
+                            <i class="portal-block-icon layui-icon layui-icon-edit"></i>
+                        </div>
+                    </div>
+                    {/if}
+                    {/foreach}
+                </div>
+                {/foreach}
+            </div>
+            <!--账户分类-->
+            <div class="layui-tab-item">
+                {foreach $user as $k=>$v}
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>{$v|username}</legend>
+                </fieldset>
+                <div class="layui-row layui-col-space15 portal-block-container notselect">
+                    {foreach $list as $key=>$vo}
+                    {if $vo.userid eq $v}
+                    <div class="layui-col-sm4 layui-col-md4 layui-col-lg3">
+                        <div class="pointer" data-open="/data/base.pager/edit.html?type=2222">
+                            <div class="portal-block-item nowrap think-bg-blue">
+                                <div class="font-s18">账户名：{$vo.name}</div>
+                                <div class="font-s14">所属人：{$vo.userid|username}</div>
+                            </div>
+                            <i class="portal-block-icon layui-icon layui-icon-edit"></i>
+                        </div>
+                    </div>
+                    {/if}
+                    {/foreach}
+                </div>
+                {/foreach}
+            </div>
+            <div class="layui-tab-item">
+                {foreach $pay as $k=>$v}
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>{$v|pay}</legend>
+                </fieldset>
+                <div class="layui-row layui-col-space15 portal-block-container notselect">
+                    {foreach $list as $key=>$vo}
+                    {if $vo.pay eq $v}
+                    <div class="layui-col-sm4 layui-col-md4 layui-col-lg3">
+                        <div class="pointer" data-open="/data/base.pager/edit.html?type=2222">
+                            <div class="portal-block-item nowrap think-bg-blue">
+                                <div class="font-s18">账户名：{$vo.name}</div>
+                                <div class="font-s14">所属人：{$vo.userid|username}</div>
+                            </div>
+                            <i class="portal-block-icon layui-icon layui-icon-edit"></i>
+                        </div>
+                    </div>
+                    {/if}
+                    {/foreach}
+                </div>
+                {/foreach}
+            </div>
+            <div class="layui-tab-item">内容5</div>
+        </div>
+    </div>
+
+
+    <!--
+
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                {foreach ['index'=>'媒体分类','yanswer'=>'渠道分类','noanswer'=>'账户分类','handin'=>'付费分类'] as $k=>$v}
+                {if isset($type) and $type eq $k}
+                <li class="layui-this" data-open="{:url('index')}?type={$k}">{$v}</li>
+                {else}
+                <li data-open="{:url('index')}?type={$k}">{$v}</li>
+                {/if}
+                {/foreach}
+            </ul>
+        </div>
+
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+            <legend>百度数据</legend>
+        </fieldset>
+        <div class="layui-row layui-col-space15 portal-block-container notselect">
+            {foreach $list as $key=>$vo}
+            {if  $vo.media eq 1}
+                <div class="layui-col-sm4 layui-col-md4 layui-col-lg3">
+                    <div class="pointer" data-open="/data/base.pager/edit.html?type=2222">
+                        <div class="portal-block-item nowrap think-bg-blue">
+                            <div class="font-s18">账户名：{$vo.name}</div>
+                            <div class="font-s14">所属人：{$vo.userid}</div>
+                        </div>
+                        <i class="portal-block-icon layui-icon layui-icon-edit"></i>
+                    </div>
+                </div>
+            {/if}
+            {/foreach}
+
+        </div>
+        -->
+</div>
+
+{/block}
+
+{block name='script'}
+<script>window.form.render()</script>
+{/block}

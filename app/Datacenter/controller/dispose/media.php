@@ -19,7 +19,7 @@ class media extends Controller
     public function index()
     {
         $this->title='媒体归属设置';
-        DataSysMedia::mQuery()->where(['deleted'=>0])->page();
+        DataSysMedia::mQuery()->where(['deleted'=>0])->order('sort desc')->page();
     }
 
     /**

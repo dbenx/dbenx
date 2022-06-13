@@ -13,7 +13,7 @@
                 <select name='network' class='layui-select' lay-search>
                     <option value=''>-- 未选择 --</option>
                     {foreach [1=>'网络',0=>'非网络'] as $k=>$v}
-                    {if input('network','-') eq $k.''}
+                    {if $vo.network eq $k}
                     <option selected value="{$k}">{$v}</option>
                     {else}
                     <option value="{$k}">{$v}</option>

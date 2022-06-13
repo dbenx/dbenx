@@ -83,7 +83,6 @@ class Keywordsconfig extends Controller
             ->toArray(), 0);
     }
 
-
     /**
      * 添加规则
      * @auth true  # 表示需要验证权限

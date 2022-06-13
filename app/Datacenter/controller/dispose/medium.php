@@ -15,7 +15,7 @@ class medium extends Controller
     {
         $this->title = "媒介渠道设置";
         $this->GetSet();
-        DataSysMedium::mQuery()->where(['deleted' => 0])->like('name')->equal('network,media,channel,status')->dateBetween('create_at')->page();
+        DataSysMedium::mQuery()->where(['deleted' => 0])->like('name')->equal('network,media,channel,status')->dateBetween('create_at')->order('sort desc')->page();
     }
 
     protected function _index_page_filter(&$data)

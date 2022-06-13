@@ -18,7 +18,7 @@ class Channel extends Controller
     public function index()
     {
         $this->title="渠道归属设置";
-        DataSysChannel::mQuery(['deleted' => 0])->page();
+        DataSysChannel::mQuery(['deleted' => 0])->order('sort desc')->page();
     }
     /**
      * 添加信息
