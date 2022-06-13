@@ -1,0 +1,41 @@
+<form class="layui-form layui-card" action="{:sysuri()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body">
+<!--
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">网络归属</label>
+            <div class="layui-input-block">
+                <select name='pid' class='layui-select' lay-search>
+                    {foreach [1=>'网络',0=>'非网络'] as $k=>$v}
+                    {if input('pid','-') eq $k.''}
+                    <option selected value="{$k}">{$v}</option>
+                    {else}
+                    <option value="{$k}">{$v}</option>
+                    {/if}{/foreach}
+                </select>
+            </div>
+        </div>
+-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">媒体名称</label>
+            <div class="layui-input-block">
+                <input name="name" value='{$vo.name|default=""}' required placeholder="请输入媒体" class="layui-input">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+
+{block name='script'}
+<script>
+    layui.form.render();
+</script>
+{/block}

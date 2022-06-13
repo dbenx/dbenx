@@ -1,0 +1,67 @@
+{extend name="../../admin/view/main"}
+{block name="button"}
+<!--{if auth("add")}-->
+<button class='layui-btn layui-btn-sm layui-btn-primary' data-modal='{:url("add")}'>添加信息</button>
+<!--{/if}-->
+
+<!--{if auth("remove")}-->
+<button data-action='{:url("remove")}' data-rule="id#{key};deleted#1" data-confirm="确定批量删除记录吗？"
+        class='layui-btn layui-btn-sm layui-btn-primary'>批量删除
+</button>
+<!--{/if}-->
+
+{/block}
+{block name='content'}
+<div class="think-box-shadow">
+    {include file='wechat/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <label><input data-auto-none data-check-target='.list-check-box' type='checkbox'></label>
+            </th>
+            <th class='list-table-sort-td'>
+                <button class="layui-btn layui-btn-xs" data-reload type="button">刷 新</button>
+            </th>
+            <th class="text-left nowrap"> 微信昵称</th>
+            <th class="text-left nowrap">来源url</th>
+            <th class="text-left nowrap">标记</th>
+            <th class="text-left nowrap">创建时间</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr data-dbclick>
+            <td class='list-table-check-td think-checkbox'>
+                <label><input class="list-check-box" type='checkbox' value='{$vo.id}'></label>
+            </td>
+            <td class='list-table-sort-td'>
+                {$vo.id}
+            </td>
+            <td class="nowrap">
+                <div class="headimg headimg-md" data-tips-hover="" data-tips-image=""
+                     data-lazy-src="{$vo.headimg|default=''}"
+                     data-lazy-loaded="true"
+                     style="background-image: url({$vo.headimg|default=''});"></div>
+                <div class="inline-block">
+                    <div> 用户昵称：<span class="color-text">{$vo.nickname|default='-'}</span></div>
+                    <div>用户手机：<span class="color-red">{$vo.phone|default='-'}</span></div>
+                    <div>用户地址：{$vo.address|default='-'}</div>
+                </div>
+            </td>
+            <td class="text-left wrap">{$vo.path|default='-'}</td>
+            <td class="text-left wrap">{if $vo.status eq 0}已禁用{elseif $vo.status eq 1}已激活{/if}</td>
+            <td class="text-left nowrap">{$vo.create_at|format_datetime}</td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}
+
+{block name='script'}
+<script>window.form.render()</script>
+{/block}

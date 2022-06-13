@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+
+</head>
+<body>
+<div id="buttom">aaa</div>
+<script>
+    var clickMe = document.getElementById("button");
+    clickMe.onclick = function(){
+        alert('aa');
+        let url= window.location.href;
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', 'http://app.szxdfpr.com/work/wechat/UrllinkGenerate', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send("url="+url);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var text = xhr.responseText;
+                var response = JSON.parse(text);
+                if(response.errcode==0){
+                    window.open(response.openlink);
+                    //document.getElementById('wechaturl').href=response.openlink;
+                }
+                console.log(response)
+            } else {
+                console.log(xhr)
+            }
+        };
+        alert('bb');
+    }
+</script>
+
+</body>
+</html>

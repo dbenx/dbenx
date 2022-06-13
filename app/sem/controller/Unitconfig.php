@@ -97,8 +97,8 @@ class Unitconfig extends Controller
                 $data[$currentRow][$currentColumn] = $cell;
             }
         }
-
         if (!isset($data)) $this->error('数据不能为空！');
+
 
         if (is_array($data)) {
             if (!isset($data[2]['A'])) $this->error('数据不能为空！');

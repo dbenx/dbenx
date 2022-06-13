@@ -76,7 +76,11 @@ class Keywordsconfig extends Controller
 
     public function json()
     {
-        $this->success('获取分类成功', SemKeywordsConfig::mk()->whereRaw('uid = ' . session('user.id') . '  OR status = 1')->order('pid,sort desc')->select()->toArray(), 0);
+        $this->success('获取分类成功', SemKeywordsConfig::mk()
+            ->whereRaw('uid = ' . session('user.id') . '  OR status = 1')
+            ->order('pid,sort desc,id')
+            ->select()
+            ->toArray(), 0);
     }
 
 
