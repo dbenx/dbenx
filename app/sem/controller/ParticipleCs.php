@@ -2,6 +2,7 @@
 
 namespace app\sem\controller;
 
+use app\sem\model\SemKeywords;
 use app\sem\model\SemKeywordsCs;
 use app\sem\model\SemKeywordsConfig;
 use app\sem\model\SemRegionConfig;
@@ -169,22 +170,22 @@ class ParticipleCs extends Controller
         $end_time = microtime(true);
         $this->execution_time = sprintf("%.2f", ($end_time - $start_time));
         // 状态数据统计
-        $this->total = ['pid' => 0, 'unit' => 0, 'noall' => 0,'all'=>0,'jhnum'=>0,'unitnum'=>0];
-        $this->total['allkeywords']=SemKeywordsCs::mk()->count('id');
+        $this->total = ['pid' => 0, 'unit' => 0, 'noall' => 0, 'all' => 0, 'jhnum' => 0, 'unitnum' => 0];
+        $this->total['allkeywords'] = SemKeywordsCs::mk()->count('id');
         $this->total['pid'] = SemKeywordsCs::mk()->where(['uid' => session('user.id'), 'pid' => 0])->count('id');
-        $this->total['unit'] = SemKeywordsCs::mk()->where(['uid' => session('user.id'), 'unitid' => 0])->where('pid','<>',0)->count('id');
+        $this->total['unit'] = SemKeywordsCs::mk()->where(['uid' => session('user.id'), 'unitid' => 0])->where('pid', '<>', 0)->count('id');
         $this->total['noall'] = SemKeywordsCs::mk()->where(['uid' => session('user.id'), 'pid' => 0, 'unitid' => 0])->count('id');
-        $this->total['all'] = SemKeywordsCs::mk()->where(['uid' => session('user.id')])->where('pid', '<>', 0)->where('unitid','<>',0)->count('id');
+        $this->total['all'] = SemKeywordsCs::mk()->where(['uid' => session('user.id')])->where('pid', '<>', 0)->where('unitid', '<>', 0)->count('id');
 
-       $this->total['jhnum']=SemKeywordsCs::mk()->field('pid,count(1) total')->where(['uid'=>session('user.id')])->where('pid','<>',0) ->group('pid')->count('pid');
-        $this->total['unitnum']=SemKeywordsCs::mk()->field('unitid,count(1) total')->where(['uid'=>session('user.id')])->where('pid','<>',0) ->group('unitid')->count('unitid');
+        $this->total['jhnum'] = SemKeywordsCs::mk()->field('pid,count(1) total')->where(['uid' => session('user.id')])->where('pid', '<>', 0)->group('pid')->count('pid');
+        $this->total['unitnum'] = SemKeywordsCs::mk()->field('unitid,count(1) total')->where(['uid' => session('user.id')])->where('pid', '<>', 0)->group('unitid')->count('unitid');
 
         $query = SemKeywordsCs::mQuery();
         if ($this->type === 'allkeywords') $query->where(['deleted' => 0]);
         elseif ($this->type === 'pid') $query->where(['pid' => 0]);
-        elseif ($this->type === 'unit') $query->where(['unitid' => 0])->where('pid','<>',0);
+        elseif ($this->type === 'unit') $query->where(['unitid' => 0])->where('pid', '<>', 0);
         elseif ($this->type === 'noall') $query->where(['pid' => 0, 'unitid' => 0]);
-        elseif ($this->type === 'all') $query->where('pid', '<>', 0)->where('unitid','<>',0);
+        elseif ($this->type === 'all') $query->where('pid', '<>', 0)->where('unitid', '<>', 0);
         else $this->error("无法加载 {$this->type} 数据列表！");
         $query->like('keyworod')->dateBetween('create_at');
         $query->where(['uid' => session('user.id')])->order('pid desc,unitid desc')->page();
@@ -224,6 +225,15 @@ class ParticipleCs extends Controller
         $this->success('数据更新成功！', 'javascript:history.back()');
     }
 
+
+    public function cs()
+    {
+        $map[] = ['keywords', '=', '初级厨师证报考多少钱'];
+        $map[] = ['keywords', '=', '厨师'];
+        $cc = SemKeywords::mk()->whereOr($map)->select()->toArray();
+        echo SemKeywords::getLastSql();
+        var_dump($cc);
+    }
 
     /**
      * 删除数据

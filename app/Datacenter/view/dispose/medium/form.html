@@ -13,11 +13,12 @@
                 <select name='network' class='layui-select' lay-search>
                     <option value=''>-- 未选择 --</option>
                     {foreach [1=>'网络',0=>'非网络'] as $k=>$v}
-                    {if $vo.network eq $k}
+                    {if (isset($vo.network) and $k eq $vo.network)}
                     <option selected value="{$k}">{$v}</option>
                     {else}
                     <option value="{$k}">{$v}</option>
-                    {/if}{/foreach}
+                    {/if}
+                    {/foreach}
                 </select>
             </div>
         </div>
@@ -70,7 +71,21 @@
             </div>
         </div>
 
-
+        <div class="layui-form-item">
+            <label class="layui-form-label label-required-next">付费情况</label>
+            <div class="layui-input-block">
+                <select name='pay' class='layui-select' lay-search>
+                    <option value=''>-- 未选择 --</option>
+                    {foreach [1=>'付费',0=>'免费'] as $k=>$v}
+                    {if (isset($vo.pay) and $k eq $vo.pay)}
+                    <option selected value="{$k}">{$v}</option>
+                    {else}
+                    <option value="{$k}">{$v}</option>
+                    {/if}
+                    {/foreach}
+                </select>
+            </div>
+        </div>
 
     </div>
 

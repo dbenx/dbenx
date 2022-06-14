@@ -1,6 +1,7 @@
 <?php
 
 namespace app\sem\command;
+
 use app\sem\model\SemKeywords;
 use app\sem\model\SemKeywordsConfig;
 use app\sem\model\SemRegionConfig;
@@ -41,7 +42,7 @@ class ParticipleTask extends Command
         $this->_Umatching($data['unitid']);
 
         if (!empty($data['regionid'])) {
-            $this->setQueueProgress("单元分分配完成，开始分配地域".$data['regionid']);
+            $this->setQueueProgress("单元分分配完成，开始分配地域" . $data['regionid']);
             $this->_Ratching($data['regionid']);
         }
 
@@ -65,11 +66,11 @@ class ParticipleTask extends Command
     protected function _matching($id)
     {
         $data = $this->queue->data;
-        $temuid=$data['jhid'];
-        $uid=$data['uid'];
+        $temuid = $data['jhid'];
+        $uid = $data['uid'];
         $kon = ParticipleService::instance()->getrootword($id);
         [$count, $total] = [0, ($result = SemKeywordsConfig::mk()->where(['pid' => $id])->select())->count()];
-       // $this->queue->message($total, ++$count, "开始分配计划：" . $id);
+        // $this->queue->message($total, ++$count, "开始分配计划：" . $id);
         // sleep(2);
         //匹配模式
         if (is_array($kon)) {
@@ -95,7 +96,7 @@ class ParticipleTask extends Command
                         $map[] = ['keywords', 'notlike', $arr, 'or'];
                     } elseif ($match === 3) {
                         foreach ($words as $v) {
-                            $map[] = ['keywords', '=', $v, 'or'];
+                            $map[] = ['keywords', '=', $v];
                         }
                     } elseif ($match === 4) {
                         foreach ($words as $v) {
@@ -112,18 +113,29 @@ class ParticipleTask extends Command
                         }
                         $map[] = ['keywords', 'like', $arr, 'or'];
                     }
+
                     if ($val['pid'] == $temuid) {
                         $query->where(['pid' => 0]);
-                        $query->where($map)->update(['pid' => $val['id']]);
+                        if ($match === 3||$match === 4) {
+                            $query->whereOr($map)->update(['pid' => $val['id']]);
+                        } else {
+                            $query->where($map)->update(['pid' => $val['id']]);
+                        }
                     } else {
                         $query->where(['pid' => $val['pid']]);
-                        $query->where($map)->update(['pid' => $val['id']]);
+                        if ($match === 3||$match === 4) {
+                            $query->whereOr($map)->update(['pid' => $val['id']]);
+                        } else {
+                            $query->where($map)->update(['pid' => $val['id']]);
+                        }
+
                     }
+
                     unset($map);
                 }
                 //   $this->setQueueProgress(SemKeywords::getLastSql());
                 #  echo SemKeywords::getLastSql();
-              //  $this->setQueueProgress("sql" .SemKeywords::getLastSql());
+                //  $this->setQueueProgress("sql" .SemKeywords::getLastSql());
                 $this->_matching($val['id']);
             }
         }
@@ -137,7 +149,7 @@ class ParticipleTask extends Command
     protected function _Umatching($id)
     {
         $data = $this->queue->data;
-        $uid=$data['uid'];
+        $uid = $data['uid'];
         $kon = ParticipleService::instance()->getUnit($id);
         [$count, $total] = [0, ($result = SemUnitConfig::mk()->where(['pid' => $id])->select())->count()];
         //匹配模式
@@ -183,7 +195,15 @@ class ParticipleTask extends Command
                     }
                     $query->where(['unitid' => 0]);
                     $query->where('pid', '<>', 0);
-                    $query->where($map)->update(['unitid' => $val['id']]);
+
+                    if ($match === 3||$match === 4) {
+                        $query->whereOr($map)->update(['pid' => $val['id']]);
+                    } else {
+                        $query->where($map)->update(['unitid' => $val['id']]);
+                    }
+
+                  //  $query->where($map)->update(['unitid' => $val['id']]);
+
                     unset($map);
                 }
                 #echo SemKeywords::getLastSql();
@@ -197,13 +217,14 @@ class ParticipleTask extends Command
      * @param $regionid
      * @throws \think\db\exception\DbException
      */
-    protected  function _Ratching($regionid){
+    protected function _Ratching($regionid)
+    {
         $data = $this->queue->data;
-        $uid=$data['uid'];
-        $regionalword=SemRegionConfig::mk()->where(['id'=>$regionid])->column('regionalwords,wregionalwords')[0];
+        $uid = $data['uid'];
+        $regionalword = SemRegionConfig::mk()->where(['id' => $regionid])->column('regionalwords,wregionalwords')[0];
         $regionalwords = explode(PHP_EOL, $regionalword['regionalwords']);
         $arr = array();
-        foreach ($regionalwords as $val){
+        foreach ($regionalwords as $val) {
             array_push($arr, '%' . $val . '%');
         }
         $map[] = ['keywords', 'like', $arr, 'or'];
