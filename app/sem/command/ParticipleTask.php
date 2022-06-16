@@ -197,7 +197,7 @@ class ParticipleTask extends Command
                     $query->where('pid', '<>', 0);
 
                     if ($match === 3||$match === 4) {
-                        $query->whereOr($map)->update(['pid' => $val['id']]);
+                        $query->whereOr($map)->update(['unitid' => $val['id']]);
                     } else {
                         $query->where($map)->update(['unitid' => $val['id']]);
                     }

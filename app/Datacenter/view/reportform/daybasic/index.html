@@ -1,0 +1,119 @@
+{extend name="../../admin/view/table"}
+
+{block name="button"}
+
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='reportform/daybasic/index_search'}
+    <!---->
+    <table id="DataDayBasic" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+    <!--
+        <table class="layui-table margin-top-10" lay-skin="line">
+
+            <thead>
+            <tr>
+                <th class='list-table-sort-td'>
+                    <button class="layui-btn layui-btn-xs" data-reload type="button">刷 新</button>
+                </th>
+                <th class='text-left nowrap'>日期</th>
+                <th class='text-center nowrap'> 商品信息</th>
+
+                <th class='text-left nowrap'></th>
+                <th class='text-left nowrap'>商品状态</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>aa</td> <td>aa</td>
+            </tr>
+
+            </tbody>
+        </table>
+    -->
+</div>
+
+
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#DataDayBasic').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [
+                [
+                    {rowspan: 2,toolbar: '#toolbar', align: 'center',minWidth: 180,title: '时间 星期', fixed: 'left'},
+                    {rowspan: 1, title: '竞价漏斗转化数据',colspan: 6,align: 'center'},
+                    {rowspan: 1, title: '3++长短期', colspan: 4,align: 'center'},
+                    {rowspan: 1, colspan: 8,align: 'center',title: '转化成本数据'},
+                    {rowspan: 1, colspan: 8,align: 'center',title: '转化率数据' },
+                    {rowspan: 1, colspan: 2,align: 'center',title: '产出比'},
+                    {rowspan: 1, colspan: 3,align: 'center',title: '长短期占比'},
+
+                ],
+                [
+
+                    {title: '展现', field: 'show',minWidth: 100,align: 'center'},
+                    {title: '点击', field: 'click',minWidth: 100,align: 'center'},
+                    {title: '消费', field: 'consumption',minWidth: 100,align: 'center'},
+                    {title: '现金消费', field: 'provence',minWidth: 100,align: 'center'},
+                    {title: '咨询', field: 'consulting',minWidth: 100,align: 'center'},
+                    {title: '名片', field: 'information',minWidth: 100,align: 'center'},
+
+
+                    {title: '长期', field: 'cqinformation',minWidth: 100,align: 'center'},
+                    {title: '短期', field: 'dqinformation',minWidth: 100,align: 'center'},
+                    {title: '单品', field: 'dpinformation',minWidth: 100,align: 'center'},
+                    {title: '信息汇总', field: 'provence',minWidth: 100,align: 'center'},
+
+
+                    {title: 'cpc', field: 'consulting',minWidth: 100,align: 'center'},
+                    {title: '咨询成本', field: 'information',minWidth: 100,align: 'center'},
+                    {title: '名片成本', field: 'show',minWidth: 100,align: 'center'},
+                    {title: '信息成本', field: 'click',minWidth: 100,align: 'center'},
+                    {title: '上门成本', field: 'consumption',minWidth: 100,align: 'center'},
+                    {title: '报名成本', field: 'provence',minWidth: 100,align: 'center'},
+                    {title: '点均成本', field: 'consulting',minWidth: 100,align: 'center'},
+                    {title: '报名单价', field: 'information',minWidth: 100,align: 'center'},
+
+                    {title: '点击率', field: 'consulting',minWidth: 100,align: 'center'},
+                    {title: '点击咨询率', field: 'information',minWidth: 100,align: 'center'},
+                    {title: '名片获取率', field: 'show',minWidth: 100,align: 'center'},
+                    {title: '信息获取率', field: 'click',minWidth: 100,align: 'center'},
+                    {title: '名片有效率', field: 'consumption',minWidth: 100,align: 'center'},
+                    {title: '上门邀约率', field: 'consumption',minWidth: 100,align: 'center'},
+                    {title: '报名率', field: 'provence',minWidth: 100,align: 'center'},
+                    {title: '总转', field: 'consulting',minWidth: 100,align: 'center'},
+
+                    {title: '有效信息现金成本', field: 'consulting',minWidth: 130,align: 'center'},
+                    {title: 'ROI', field: 'consulting',minWidth: 100,align: 'center'},
+
+                    {title: '长训占比', field: 'consulting',minWidth: 100,align: 'center'},
+                    {title: '短期占比', field: 'consulting',minWidth: 100,align: 'center'},
+                    {title: '单品占比', field: 'consulting',minWidth: 100,align: 'center'},
+
+                ]
+
+            ],
+        });
+    });
+
+</script>
+
+<script type="text/html" id="toolbar">
+    2022-06-15 星期三
+</script>
+
+
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+    });
+</script>
+{/block}

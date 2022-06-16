@@ -76,4 +76,9 @@ class Semtool extends Controller
         $this->Region=json_encode(BaseRegion::mk()->column('id,title'));
         $this->fetch();
     }
+
+
+    public  function columntorow(){
+        $this->fetch();
+    }
 }

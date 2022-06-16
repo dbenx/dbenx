@@ -76,11 +76,12 @@ class Keywordsconfig extends Controller
 
     public function json()
     {
-        $this->success('获取分类成功', SemKeywordsConfig::mk()
+        $rs = SemKeywordsConfig::mk()
             ->whereRaw('uid = ' . session('user.id') . '  OR status = 1')
             ->order('pid,sort desc,id')
-            ->select()
-            ->toArray(), 0);
+            ->column('id,pid,uid,title,match,rootword,status,sort');
+        $this->success('获取分类成功', $rs, 0);
+
     }
 
     /**
@@ -151,7 +152,7 @@ class Keywordsconfig extends Controller
             $vo['pid'] = $vo['pid'] ?? input('pid', '0');
 
             /* 列出可选上级菜单 */
-            $menus = SemKeywordsConfig::mk()->order('sort desc,id asc')->where(['uid'=>session('user.id')])->column('id,pid,rootword,title,params', 'id');
+            $menus = SemKeywordsConfig::mk()->order('sort desc,id asc')->where(['uid' => session('user.id')])->column('id,pid,rootword,title,params', 'id');
             # var_dump($menus);
             $this->menus = DataExtend::arr2table(array_merge($menus, [['id' => '0', 'pid' => '-1', 'title' => '顶部菜单']]));
             if (isset($vo['id'])) foreach ($this->menus as $menu) if ($menu['id'] === $vo['id']) $vo = $menu;
@@ -229,9 +230,9 @@ class Keywordsconfig extends Controller
     {
         $uid = isset(SemKeywordsConfig::mk()->where(['id' => $id])->column('uid')[0]) ? SemKeywordsConfig::mk()->where(['id' => $id])->column('uid')[0] : false;
         if ($uid) {
-           if($uid!=session('user.id')) $this->error('禁止操作！','javascript:history.go(0)');
-        }else{
-           // $this->error('数据错误');
+            if ($uid != session('user.id')) $this->error('禁止操作！', 'javascript:history.go(0)');
+        } else {
+            // $this->error('数据错误');
         }
     }
 

@@ -201,19 +201,25 @@ class ParticipleCs extends Controller
      */
     public function find($id)
     {
-        if (empty($id)) $this->error('请选择计划规则！');
-        SemKeywordsCs::mk()->where(['uid' => session('user.id')])->update(['pid' => 0]);
-        ParticipleService::instance()->matching($id);
-        $this->success('数据更新成功！', 'javascript:history.back()');
+      //  if (empty($id)) $this->error('请选择计划规则！');
+      //  SemKeywordsCs::mk()->where(['uid' => session('user.id')])->update(['pid' => 0]);
+        echo $id;
+      //  ParticipleCsService::instance()->matching($id);
+     //   $this->success('数据更新成功！', 'javascript:history.back()');
     }
+
+
 
     public function ufind($unitid)
     {
-        if (empty($unitid)) $this->error('请选择单元规则！');
-        SemKeywordsCs::mk()->where(['uid' => session('user.id')])->update(['unitid' => 0]);
+       // echo $unitid;
+
+      //  if (empty($unitid)) $this->error('请选择单元规则！');
+       // SemKeywordsCs::mk()->where(['uid' => session('user.id')])->update(['unitid' => 0]);
         //  $this->_Umatching($unitid);
-        ParticipleService::instance()->Umatching($unitid);
-        $this->success('数据更新成功！', 'javascript:history.back()');
+        ParticipleCsService::instance()->Umatching($unitid);
+
+       // $this->success('数据更新成功！', 'javascript:history.back()');
     }
 
     public function rfind($regionid)

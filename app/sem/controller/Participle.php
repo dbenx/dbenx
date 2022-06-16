@@ -67,11 +67,13 @@ class Participle extends Controller
             $SemRegionConfig[$val['id']] = array('regionalwords' => $val['regionalwords'], 'title' => $val['title']);
         }
 
+        //var_dump($SemKeywordsConfig);
         foreach ($data as &$vo) {
+           // echo $vo['pid'];
             if ($vo['pid'] != 0) {
-                $vo['plankw'] = $SemKeywordsConfig[$vo['pid']]['rootword'];
-                $vo['planmatch'] = $SemKeywordsConfig[$vo['pid']]['match'];
-                $vo['pid'] = $SemKeywordsConfig[$vo['pid']]['title'];
+                $vo['plankw'] =$SemKeywordsConfig[$vo['pid']]['rootword'];
+                $vo['planmatch'] =$SemKeywordsConfig[$vo['pid']]['match'];
+                $vo['pid'] =$SemKeywordsConfig[$vo['pid']]['title'];
             }
 
             if ($vo['unitid'] != 0) {

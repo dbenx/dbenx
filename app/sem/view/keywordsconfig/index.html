@@ -12,7 +12,7 @@
         <div class="layui-form-item layui-inline">
             <button id="show" class="layui-btn">展开</button>
             <button id="hide" class="layui-btn layui-btn-warm">折叠</button>
-            <button id="showSn" class="layui-btn layui-btn-primary" data-file data-type="xlsx,xls" data-uptype='local' data-field="topic_excel"><i class="layui-icon">&#xe655;</i>导入数据</button>
+            <button class="layui-btn layui-btn-primary" data-file data-type="xlsx,xls" data-uptype='local' data-field="topic_excel"><i class="layui-icon">&#xe655;</i>导入数据</button>
 
 
         </div>
@@ -28,7 +28,6 @@
     layui.use(['table', 'tableTreeDj'], function () {
         const table = layui.table
         const tableTree = layui.tableTreeDj;
-        console.log(tableTree);
         const $ = layui.$;
         const cols = [[
              {toolbar: '#toolbar', title: '操作面板', minWidth: 200, align: 'center', fixed: 'left'}
@@ -100,31 +99,6 @@
             tableTree.hideAll(objTable);
         });
 
-        $('#showSn').click(() => {
-            const run = tableTree.getRun();
-            const dataIndex = run.dataIndex;
-            for (let id in dataIndex) {
-                let has = true;
-                let sn = id;
-                let idNow = id;
-                while (has) {
-                    if (!!run.childParent[idNow]) {
-                        let pid = run.childParent[idNow];
-                        sn = pid + " - " + sn;
-                        idNow = pid
-                    } else {
-                        break;
-                    }
-                }
-                $("[lay-id='" + objTable.id + "'] table tr[data-index='" + dataIndex[id] + "'] td[data-field=" + "sn" + "]").children("div").html(sn);
-            }
-        });
-
-        $('#reload').click(() => {
-            objTable.where = {key: "val"}
-            tableTree.reload(objTable, 'list');
-        });
-
         // 数据状态切换操作
         layui.form.on('switch(StatusSwitch)', function (obj) {
             $.form.load("{:url('state')}", {id: obj.value, status: obj.elem.checked > 0 ? 1 : 0}, 'post', function (ret) {
@@ -139,6 +113,7 @@
                 return false;
             }, false);
         });
+
         require(['excel'], function (excel) {
             var d = new Date();
             excel.bind(function (data) {
