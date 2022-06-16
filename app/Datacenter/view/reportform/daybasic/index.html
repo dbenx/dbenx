@@ -8,7 +8,7 @@
 <div class="think-box-shadow">
     {include file='reportform/daybasic/index_search'}
     <!---->
-    <table id="DataDayBasic" data-url="{:sysuri()}" data-target-search="form.form-search"></table>
+    <table id="DataDayBasic" data-url="{:sysuri()}" data-target-search="form.form-search" lay-filter="DataDayBasic"></table>
     <!--
         <table class="layui-table margin-top-10" lay-skin="line">
 
@@ -54,11 +54,10 @@
                     {rowspan: 1, colspan: 8,align: 'center',title: '转化率数据' },
                     {rowspan: 1, colspan: 2,align: 'center',title: '产出比'},
                     {rowspan: 1, colspan: 3,align: 'center',title: '长短期占比'},
-
                 ],
                 [
 
-                    {title: '展现', field: 'show',minWidth: 100,align: 'center'},
+                    {title: '展现', field: 'show',minWidth: 100,align: 'center',edit: 'text'},
                     {title: '点击', field: 'click',minWidth: 100,align: 'center'},
                     {title: '消费', field: 'consumption',minWidth: 100,align: 'center'},
                     {title: '现金消费', field: 'provence',minWidth: 100,align: 'center'},
@@ -111,9 +110,16 @@
 
 
 <script>
-    layui.use('table', function () {
-        var table = layui.table;
-
+    layui.use(['table', 'util'], function(){
+        var table = layui.table
+            ,util = layui.util;
+        //单元格编辑事件
+        table.on('edit(DataDayBasic)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改值为：'+ util.escape(value));
+        });
     });
 </script>
 {/block}
