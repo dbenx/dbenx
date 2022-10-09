@@ -6,7 +6,8 @@ use app\data\command\UserAmount;
 use app\data\command\UserTransfer;
 use app\data\command\UserUpgrade;
 use app\sem\command\ParticipleTask;
-use app\data\command\SumAdd;
+use app\sem\command\GetBaiduTask;
+use app\sem\command\XlsToolsTask;
 use app\data\service\OrderService;
 use app\data\service\RebateService;
 use app\data\service\UserBalanceService;
@@ -19,6 +20,8 @@ if ($app->request->isCli()) {
     // 分词任务
     Console::starting(function (Console $console) {
         $console->addCommand(ParticipleTask::class);
+        $console->addCommand(GetBaiduTask::class);
+        $console->addCommand(XlsToolsTask::class);
     });
 } else {
     // 分词任务

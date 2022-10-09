@@ -20,7 +20,20 @@
                 <input class="layui-input" name="username" placeholder="请输入回答用户" value="{$get.username|default=''}">
             </label>
         </div>
-
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">来源</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="robot">
+                    <option value=''>-- 全部 --</option>
+                    {foreach ['自建', '采集'] as $k=>$v}
+                    {if $k.'' eq input('robot')}
+                    <option selected value="{$k}">{$v}</option>
+                    {else}
+                    <option value="{$k}">{$v}</option>
+                    {/if}{/foreach}
+                </select>
+            </div>
+        </div>
         <div class="layui-form-item layui-inline">
             <label class="layui-form-label">标记</label>
             <div class="layui-input-inline">
@@ -37,6 +50,8 @@
                 </select>
             </div>
         </div>
+
+
 
         <div class="layui-form-item layui-inline">
             <label class="layui-form-label">创建时间</label>

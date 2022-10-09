@@ -112,9 +112,17 @@ class Queue extends Controller
         $this->_queue('定时获取抖音数据', "xdata:GetfeiyuData", 0, [], 0, 600);
     }
 
-    public  function  dbenx($uuid=1,$puid=2){
+    public  function  dbenx(){
         $data=array('uuid'=>1000,'puid'=>2);
-        $this->_queue('测试任务', "xdata:SumAdd", 0, $data, 1, 10);
+        $this->_queue('测试任务', "xdata:SumAdd", 0, $data, 0, 0);
+
+
+       // $url='http://127.0.0.1:315/push/receiveBodyRecord';
+      //  $data = array( "mobile" =>'13523262514', "nickName"=>'aa');
+    //  $dd=  $this->postcurl($data,$url);
+     // var_dump($dd);
     }
+
+
 
 }

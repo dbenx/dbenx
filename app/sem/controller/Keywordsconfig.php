@@ -68,6 +68,7 @@ class Keywordsconfig extends Controller
      */
     protected function _export_page_filter(array &$data)
     {
+
         foreach ($data as &$vo) {
             $vo['match'] = UnitConfigService::instance()->MatchNumtoStr($vo['match']);
             $vo['rootword'] = str_replace(PHP_EOL, "-", $vo['rootword']);
@@ -76,13 +77,27 @@ class Keywordsconfig extends Controller
 
     public function json()
     {
+        /*
         $rs = SemKeywordsConfig::mk()
             ->whereRaw('uid = ' . session('user.id') . '  OR status = 1')
             ->order('pid,sort desc,id')
             ->column('id,pid,uid,title,match,rootword,status,sort');
+        */
+        $rs = SemKeywordsConfig::mk()
+            ->alias('a')
+            ->leftJoin('system_user w', 'a.uid = w.id')
+            ->whereRaw('a.uid = ' . session('user.id') . '  OR a.status = 1')
+            ->order('pid,sort desc,id')
+            ->column('a.id,pid,uid,title,match,rootword,a.status,a.sort,w.nickname');
         $this->success('获取分类成功', $rs, 0);
+    }
+
+
+    public function cs()
+    {
 
     }
+
 
     /**
      * 添加规则
@@ -152,7 +167,7 @@ class Keywordsconfig extends Controller
             $vo['pid'] = $vo['pid'] ?? input('pid', '0');
 
             /* 列出可选上级菜单 */
-            $menus = SemKeywordsConfig::mk()->order('sort desc,id asc')->where(['uid' => session('user.id')])->column('id,pid,rootword,title,params', 'id');
+            $menus = SemKeywordsConfig::mk()->order('sort desc,id asc')->where(['uid' => session('user.id')])->column('id,pid,rootword,title', 'id');
             # var_dump($menus);
             $this->menus = DataExtend::arr2table(array_merge($menus, [['id' => '0', 'pid' => '-1', 'title' => '顶部菜单']]));
             if (isset($vo['id'])) foreach ($this->menus as $menu) if ($menu['id'] === $vo['id']) $vo = $menu;
@@ -165,8 +180,64 @@ class Keywordsconfig extends Controller
         }
     }
 
-
     public function import()
+    {
+        $file = $this->app->request->post('file');
+        if (!$file) $this->error('文件不能为空');
+        $file = '.' . str_replace($this->app->request->domain(), '', $file);
+        //表格字段对应
+        $cellName = [
+            'A' => 'id',//序号
+            'B' => 'pid',//上级ID
+            'C' => 'title',//标题
+            'D' => 'match',//匹配模式
+            'E' => 'rootword',//词根
+        ];
+        //加载文件
+        $spreadsheet = IOFactory::load($file);
+        $sheet = $spreadsheet->getActiveSheet();               // 获取表格
+        $highestRow = $sheet->getHighestRow();                 // 取得总行数
+        $sheetData = [];
+        for ($row = 2; $row <= $highestRow; $row++) {          // $row表示从第几行开始读取
+            foreach ($cellName as $cell => $field) {
+                $value = $sheet->getCell($cell . $row)->getValue();
+                $value = trim($value);
+                $sheetData[$row][$field] = $value;
+            }
+        }
+        $sheetData = array_values($sheetData);
+
+
+        if (is_array($sheetData)) {
+            if (!isset($sheetData[0]['id'])) $this->error('数据不能为空！');
+            try {
+                foreach ($sheetData as $key => $val) {
+                    $rs[$key]['id'] = $val['id'];
+                    $rs[$key]['pid'] = $val['pid'];
+                    $rs[$key]['uid'] = session('user.id');
+                    $rs[$key]['title'] = $val['title'];
+                    $rs[$key]['match'] = UnitConfigService::instance()->MatchStrtoNum($val['match']);
+                    $rs[$key]['rootword'] = isset($val['rootword']) ? UnitConfigService::instance()->rootword($val['rootword']) : '';
+                }
+            } catch (\Exception $exception) {
+                $this->error($exception->getMessage());
+            }
+            $rds = KeywordConfigService::instance()->generateTree($rs);
+            for ($i = 0; $i < count($rds); $i++) {
+                KeywordConfigService::instance()->DiguiDb($rds[$i]);
+            }
+            unset($rs);
+            unlink($file);//因为之前使用的是上传的文件进行操作，这里把它删除，看个人情况具体处理
+            $this->success('数据导入成功！');
+        } else {
+            $this->error('导入数据有误！');
+        }
+
+
+    }
+
+
+    public function import1()
     {
         $file = $this->app->request->post('file');
         if (!$file) $this->error('文件不能为空');
@@ -211,10 +282,9 @@ class Keywordsconfig extends Controller
                 $this->error($exception->getMessage());
             }
 
-            //$rds = $this->generateTree($rs);
+
             $rds = KeywordConfigService::instance()->generateTree($rs);
             for ($i = 0; $i < count($rds); $i++) {
-                // $this->digui_db($rds[$i]);//第一层进库的pid为0
                 KeywordConfigService::instance()->DiguiDb($rds[$i]);
             }
             unset($rs);

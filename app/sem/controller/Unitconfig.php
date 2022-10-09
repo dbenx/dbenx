@@ -51,9 +51,9 @@ class Unitconfig extends Controller
     protected function _export_page_filter(array &$data)
     {
         foreach ($data as &$vo) {
-           // $vo['match'] = $this->_matchtostr($vo['match']);
+            // $vo['match'] = $this->_matchtostr($vo['match']);
             $vo['match'] = UnitConfigService::instance()->MatchNumtoStr($vo['match']);
-            $vo['rootword'] =str_replace(PHP_EOL, "-", $vo['rootword']);
+            $vo['rootword'] = str_replace(PHP_EOL, "-", $vo['rootword']);
         }
     }
 
@@ -65,7 +65,14 @@ class Unitconfig extends Controller
      */
     public function json()
     {
-        $this->success('获取分类成功', SemUnitConfig::mk()->whereRaw('uid = ' . session('user.id') . '  OR status = 1')->order('pid,sort desc,id')->select()->toArray(), 0);
+       // $rs=SemUnitConfig::mk()->whereRaw('uid = ' . session('user.id') . '  OR status = 1')->order('pid,sort desc,id')->select()->toArray();
+        $rs = SemUnitConfig::mk()
+            ->alias('a')
+            ->leftJoin('system_user w', 'a.uid = w.id')
+            ->whereRaw('a.uid = ' . session('user.id') . '  OR a.status = 1')
+            ->order('pid,sort desc,id')
+            ->column('a.id,pid,uid,title,match,rootword,a.status,a.sort,w.nickname');
+        $this->success('获取分类成功',$rs , 0);
     }
 
     public function import()
@@ -73,47 +80,41 @@ class Unitconfig extends Controller
         $file = $this->app->request->post('file');
         if (!$file) $this->error('文件不能为空');
         $file = '.' . str_replace($this->app->request->domain(), '', $file);
-        // $file = './upload/75/bed21bdc40abe61c0397cf2182a118.xls';
-
+        //表格字段对应
+        $cellName = [
+            'A' => 'title',//序号
+            'B' => 'match',//题目
+            'C' => 'rootword',//题目
+        ];
+        //加载文件
         $spreadsheet = IOFactory::load($file);
         $sheet = $spreadsheet->getActiveSheet();               // 获取表格
         $highestRow = $sheet->getHighestRow();                 // 取得总行数
         $sheetData = [];
-        //获取总列数
-        $allColumn = $sheet->getHighestColumn();
-        $allColumn++;
-        //获取总行数
-        $allRow = $sheet->getHighestRow();
-        $highestColumn = $sheet->getHighestColumn();
-
-        for ($currentRow = 0; $currentRow <= $allRow; $currentRow++) {
-            for ($currentColumn = 'A'; $currentColumn != $allColumn; $currentColumn++) {
-                //数据坐标
-                $address = $currentColumn . $currentRow;
-                //读取到的数据，保存到数组$data中
-                $cell = $sheet->getCell($address)->getValue();
-                if (!$cell) continue;
-                // $data[$currentColumn][$currentRow] = $cell;
-                $data[$currentRow][$currentColumn] = $cell;
+        for ($row = 2; $row <= $highestRow; $row++) {          // $row表示从第几行开始读取
+            foreach ($cellName as $cell => $field) {
+                $value = $sheet->getCell($cell . $row)->getValue();
+                $value = trim($value);
+                $sheetData[$row][$field] = $value;
             }
         }
-        if (!isset($data)) $this->error('数据不能为空！');
+        $sheetData = array_values($sheetData);
 
+        if (!isset($sheetData)) $this->error('数据不能为空！');
+        if (is_array($sheetData)) {
+            if (!isset($sheetData[0]['title'])) $this->error('数据不能为空！');
+            $id = SemUnitConfig::mk()->insertGetId(['uid' => session('user.id'), 'title' => $sheetData[0]['title']]);
 
-        if (is_array($data)) {
-            if (!isset($data[2]['A'])) $this->error('数据不能为空！');
-            $id = SemUnitConfig::mk()->insertGetId(['uid' => session('user.id'), 'title' => $data[2]['A']]);
             if (!$id) $this->error('导入数据错误！');
             try {
-                foreach ($data as $key => $val) {
-                    if ($key > 2) {
+                foreach ($sheetData as $key => $val) {
+                    if ($key > 0) {
                         $rs[$key]['pid'] = $id;
                         $rs[$key]['uid'] = session('user.id');
-                        $rs[$key]['title'] = $val['A'];
-                       // $rs[$key]['match'] = $this->_match($val['B']);
-                        $rs[$key]['match'] = UnitConfigService::instance()->MatchStrtoNum($val['B']);
-
-                        $rs[$key]['rootword'] = UnitConfigService::instance()->rootword($val['C']);
+                        $rs[$key]['title'] = $val['title'];
+                        // $rs[$key]['match'] = $this->_match($val['B']);
+                        $rs[$key]['match'] = UnitConfigService::instance()->MatchStrtoNum($val['match']);
+                        $rs[$key]['rootword'] = UnitConfigService::instance()->rootword($val['rootword']);
                     }
                 }
             } catch (\Exception $exception) {
@@ -122,6 +123,7 @@ class Unitconfig extends Controller
             }
             $this->app->db->name('SemUnitConfig')->data($rs)->strict(false)->insertAll();
             unset($rs);
+            unlink($file);//因为之前使用的是上传的文件进行操作，这里把它删除，看个人情况具体处理
             $this->success('数据导入成功！');
         } else {
             $this->error('导入数据有误！');
@@ -162,9 +164,9 @@ class Unitconfig extends Controller
         if ($this->request->isGet()) {
             /* 选择自己的上级菜单 */
             $vo['pid'] = $vo['pid'] ?? input('pid', '0');
-            $this->tmenu = SemUnitConfig::mk()->where(['pid' => 0,'uid'=>session('user.id')])->select()->toArray();
-        }else{
-            $vo['rootword']=str_replace(' ','',$vo['rootword']);
+            $this->tmenu = SemUnitConfig::mk()->where(['pid' => 0, 'uid' => session('user.id')])->select()->toArray();
+        } else {
+            $vo['rootword'] = str_replace(' ', '', $vo['rootword']);
         }
     }
 
@@ -196,8 +198,6 @@ class Unitconfig extends Controller
         ]);
         $this->success('更新数据成功！');
     }
-
-
 
     protected function _auth($id)
     {

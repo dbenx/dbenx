@@ -1,0 +1,70 @@
+{extend name="../../admin/view/main"}
+{block name="button"}
+
+{/block}
+{block name='content'}
+<div class="think-box-shadow">
+
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <label><input data-auto-none data-check-target='.list-check-box' type='checkbox'></label>
+            </th>
+            <th class="text-left nowrap">ID</th>
+            <th class="text-left nowrap">姓名</th>
+            <th class="text-left nowrap">性别</th>
+            <th class="text-left nowrap">年龄</th>
+            <th class="text-left nowrap">家庭主要成员联系方式</th>
+            <th class="text-left nowrap">就读中学</th>
+            <th class="text-left nowrap">户口类型</th>
+            <th class="text-left nowrap">最后一次中考试成绩</th>
+            <th class="text-left nowrap">中考预估分数</th>
+            <th class="text-left nowrap">成绩证明人</th>
+            <th class="text-left nowrap">证明人联系方式</th>
+            <th class="text-left nowrap">学籍是否在初中学校</th>
+            <th class="text-left nowrap">喜欢的专业</th>
+            <th class="text-left nowrap">选择学习的原因</th>
+            <th class="text-left nowrap">兴趣爱好</th>
+            <th class="text-left nowrap">自我评价</th>
+            <th class="text-left nowrap">接待教师姓名</th>
+            <th class="text-left nowrap">家庭地址</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr data-dbclick>
+            <td class='list-table-check-td think-checkbox'>
+                <label><input class="list-check-box" type='checkbox' value='{$vo.id}'></label>
+            </td>
+            <td class='list-table-sort-td'>{$vo.id} </td>
+            <td class="nowrap">{$vo.name|default='-'}</td>
+            <td class="nowrap">{$vo.sex|default='-'}</td>
+            <td class="text-left wrap">{$vo.age|default='-'}</td>
+            <td class="nowrap"> {$vo.familyPhone|default='-'}</td>
+            <td class="nowrap"> {$vo.highSchool|default='-'}</td>
+            <td class="nowrap"> {$vo.registered|default='-'}</td>
+            <td class="nowrap"> {$vo.lastResults|default='-'}</td>
+            <td class="nowrap"> {$vo.highExamForecastScore|default='-'}</td>
+            <td class="nowrap"> {$vo.referenceOfGrades|default='-'}</td>
+            <td class="nowrap"> {$vo.referenceOfGradesPhone|default='-'}</td>
+            <td class="nowrap"> {$vo.studentStatusInHighSchool|default='-'}</td>
+            <td class="nowrap"> {$vo.favoriteMajor|default='-'}</td>
+            <td class="nowrap"> {$vo.reasonsLearning|default='-'}</td>
+            <td class="nowrap"> {$vo.hobbies|default='-'}</td>
+            <td class="nowrap"> {$vo.selfAssessment|default='-'}</td>
+            <td class="nowrap"> {$vo.teachername|default='-'}</td>
+            <td class="nowrap"> {$vo.address|default='-'}</td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}
+
+{block name='script'}
+<script>window.form.render()</script>
+{/block}

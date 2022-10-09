@@ -75,6 +75,7 @@ class medium extends Controller
      * @auth true
      * @menu  true
      * @auth true
+     * H4017682910
      */
     public function state()
     {

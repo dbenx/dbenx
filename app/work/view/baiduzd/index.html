@@ -23,7 +23,8 @@
 {block name='content'}
 <div class="layui-tab layui-tab-card">
     <ul class="layui-tab-title">
-        {foreach ['index'=>'全部链接','yanswer'=>'已 回 答','noanswer'=>'未 回 答','handin'=>'已 上 交','recycle'=>'回 收 站'] as $k=>$v}
+        {foreach ['index'=>'全部链接','yanswer'=>'已 回 答','noanswer'=>'未 回 答','handin'=>'已 上 交','recycle'=>'回 收 站'] as
+        $k=>$v}
         {if isset($type) and $type eq $k}
         <li class="layui-this color-red" data-open="{:url('index')}?type={$k}">{$v}</li>
         {else}
@@ -43,20 +44,21 @@
 {block name='script'}
 <script>
 
-    function  cc(){
+    function cc() {
         var checkStatus = layui.table.checkStatus('Baidu'); //demo 即为基础参数 id 对应的值
         if (checkStatus.data.length > 0) {
             var idsArray = [];
             for (var i = 0; i < checkStatus.data.length; i++) {
                 idsArray.push(checkStatus.data[i].huida);
 
-                window.open(checkStatus.data[i].huida,"_blank");
+                window.open(checkStatus.data[i].huida, "_blank");
             }
         }
     }
+
     $(function () {
         $('#Baidu').layTable({
-            limits: [20,40,100, 200, 500, 1000, 5000],
+            limits: [20, 40, 100, 200, 500, 1000, 5000],
             where: {type: '{$type|default="index"}'},
             even: true, height: 'full',
             sort: {field: 'id', type: 'desc'},
@@ -92,9 +94,19 @@
                             for (i = 0; i < arr.length - 1; i++) {
                                 str = '<button type="button" class="layui-btn layui-btn-primary layui-btn-xs">' + arr[i] + '</button>' + str;
                             }
+
                             return str
                         } else {
                             return '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger">未作答</button>'
+                        }
+                    }
+                },
+                {
+                    field: 'robot', title: '来源', width: 150, templet: function (d) {
+                        if (d.robot == 1) {
+                            return '采集'
+                        } else {
+                            return '自建'
                         }
                     }
                 },
@@ -122,14 +134,6 @@
                 click: function (obj) {
                     var checkStatus = layui.table.checkStatus('Baidu'); //demo 即为基础参数 id 对应的值
                     if (checkStatus.data.length > 0) {
-                        var idsArray = [];
-                        for (var i = 0; i < checkStatus.data.length; i++) {
-                            idsArray.push(checkStatus.data[i].id);
-                        }
-                        var ids = idsArray.toString();
-                        console.log(ids);
-                        layui.layer.alert(ids);
-                        var checkStatus = layui.table.checkStatus('Baidu'); //demo 即为基础参数 id 对应的值
                         if (checkStatus.data.length > 0) {
                             var idsArray = [];
                             for (var i = 0; i < checkStatus.data.length; i++) {
@@ -192,7 +196,8 @@
                 }
             });
         });
-    });
+    })
+        ;
 </script>
 
 <script type="text/html" id="mark">

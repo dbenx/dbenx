@@ -26,7 +26,7 @@
                     {foreach $list as $key=>$vo}
                     {if $vo.media eq $v}
                     <div class="layui-col-sm4 layui-col-md4 layui-col-lg3">
-                        <div class="pointer" data-open="{:url('/datacenter/reportform.daybasic/')}">
+                        <div class="pointer" data-open="{:url('/datacenter/reportform.daybasic/index')}?mid={$vo.id}">
                             <div class="portal-block-item  think-bg-blue">
                                 <div class="font-s18">账户名：{$vo.name}</div>
                                 <div class="font-s14">所属人：{$vo.userid|username}</div>

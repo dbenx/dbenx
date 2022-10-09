@@ -2,6 +2,7 @@
 
 namespace app\work\controller;
 
+use app\work\model\WordBaiduurl;
 use app\work\model\WordBaiduzd;
 use app\work\service\BaiduService;
 use think\admin\Controller;
@@ -42,10 +43,10 @@ class Baiduzd extends Controller
             } elseif ($this->type === 'yanswer') {
                 $query->where(['is_deleted' => 0, 'uid' => session('user.id')]);
                 $query->where('username', '<>', '');
-                $query->where('status','<>',2);
+                $query->where('status', '<>', 2);
             }
             // 数据列表搜索过滤
-            $query->dateBetween('create_at')->equal('status')->like('title,username,url');
+            $query->dateBetween('create_at')->equal('status,robot')->like('title,username,url');
         });
     }
 
@@ -112,103 +113,6 @@ class Baiduzd extends Controller
             sleep(1);//暂停1秒
         }
         $this->success('更新成功！', 'javascript:history.back()');
-    }
-
-    public function logo()
-    {
-        $url = 'https://zhidao.baidu.com/submit/ajax/';
-
-        $header = array(
-            "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8",
-            "X-ik-token" => "a913575159b88f6df452b56ed039be45",
-            "Cookie" => array(
-                "BAIDUID" => "A1E5A137E0536B9B717CAC3C72252D18:FG=1",
-                "BDUSS" => "FZPSHB0NmV0eXFwd3JDY3dNZGRQeFRPc2hXUnFaazJtY3VQNndxS1BKRHBKNXRpSVFBQUFBJ",
-                "BDUSS_BFESS" => "FZPSHB0NmV0eXFwd3JDY3dNZGRQeFRPc2hXUnFaazJtY3VQNndxS1BKRHBKNXRpSVFBQUFBJ",
-                "BIDUPSID" => "A1E5A137E0536B9B717CAC3C72252D18",
-                "PSTM" => "652106681",
-                "Hm_lvt_6859ce5aaf00fb00387e6434e4fcc925" => "1652413417,1654132512",
-                "cflag" => "13 % 3A3",
-                "shitong_key_id" => "2",
-                "ZD_ENTRY" => "other",
-                "BAIDUID_BFESS" => "54D113BC436885D61368E083AF6394A6:FG = 1",
-                "session_id" => "165415684312737243812809752397",
-                "ab_sr" => "1.0.1_YjJiYjk5MzI4OTI2ODEzOWJjMThlNmZlMmU0YTBiNzlkOTczZGUwMzM3ZDFkOWVmNTZlMTNi",
-                "Hm_lpvt_6859ce5aaf00fb00387e6434e4fcc925" => "1654156843",
-                "shitong_data" => "5027c3cd26506aa62faca8208cc71c13d4a3608bf77997ff2a4fdbd65dfc85fec35c8074ff8a880064de3",
-                "shitong_sign" => "8d1d25da"
-            ),
-        );
-        $body = array(
-            "qid"=>592332214999148805,
-            "co"=>'<p data-diagnose-id="6ac73c4ee5459edf8a45459ed94c2e1f">深圳新东方烹饪学校是经深圳市坪山区人力资源局批准成立的大型烹饪专业学校。学校专业设置齐全，涵盖以粤菜、川菜、湘菜为代表的传统八大菜系，以及西点西餐教育,是培养高级烹调师、中西面点师和烹饪管理人才的餐饮教育基地。</p><p data-diagnose-id="3e745e0caa3522135fc20ac8b35641f6">深圳市坪山区新东方烹饪职业培训学校于2015年创立，经深圳市坪山区人力资源局批准成立的专业烹饪培训学校。</p>',
-            "stoken"=>"a913575159b88f6df452b56ed039be45"
-        );
-        $result = BaiduService::instance()->post($url, $body, $header);
-        var_dump($result);
-
-    }
-
-
-    public function getdata()
-    {
-        $url = "https://www.douyin.com/aweme/v1/web/comment/list/?device_platform=webapp&aid=6383&channel=channel_pc_web&aweme_id=7091618202253298956&cursor=70&count=5&item_type=0&rcFT=AAO2wQu7w&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=100.0.4896.127&browser_online=true&engine_name=Blink&engine_version=100.0.4896.127&os_name=Windows&os_version=10&cpu_core_num=8&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=100&webid=7098588012937905664&msToken=qySNnKuK_0RxqvNpYKvondHiLbHuBXDBn36FLJ3Py2yRijQ_MmVkhBIgX7jdGIq7N0a-omkpvsROnFnDJ1H6Uulcv3vYVaeBcqlAtf6VBKlPPxMoJ5waCUrpZc0j2nrq&X-Bogus=DFSzswVuy-tANnrUSwlOORXAIQRL&_signature=_02B4Z6wo000012r4afgAAIDCCfKpkW0NJp9q-G1AALg4bfujojL.ftgN3nu3ZgIZhulhd.7FmRxF3xSPMH.UuG1QfFlaLOgc.Vlg2w9fMkT0FCoklUSWWfnS15dJSsa5p.oShctPi4ts.jll29";
-        $body = array(
-            "aid" => 6383,
-            "aweme_id" => 7091618202253298956,
-            "cursor" => 110,
-            "count" => 5,
-            "rcFT" => "AAQffZzBg",
-            "webid" => 7098588012937905664,
-            "msToken" => "e-6wtHh5r732Lz7Lu3h_xk7U1QYQZMYRulQG0vIKT0ihV-GY-HZLgdG5T64EDrqVnB17G9gfeIY0ct_XDlwUWNxd9ZrGdUxjdDRABkfcmxCgMRMQljclwqki7lwVSe8=
-        X-Bogus: DFSzKwVLo40ANVLnSwluhRXAIQ20",
-            "_signature" => " _02B4Z6wo00001f-JuOQAAIDAnIN4jFjSrln.ibxAAB1zd92V4xgVJLwdESMaTSA7KpxDGtH-rVubm9JVtlzqW0EbvZ2IIb5xnAOdPj.UxUqve1XRO.UJMoq5M1ZMOwdruT1YFH5IyrKzghnF24"
-        );
-
-        $rs = $this->curl_get($url);
-        var_dump($rs);
-    }
-
-
-    public function curl_get($url)
-    {
-        $info = curl_init();
-        curl_setopt($info, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($info, CURLOPT_HEADER, 0);
-        curl_setopt($info, CURLOPT_NOBODY, 0);
-        curl_setopt($info, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($info, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($info, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($info, CURLOPT_URL, $url);
-        $output = curl_exec($info);
-        $aStatus = curl_getinfo($info);
-        curl_close($info);
-        echo "<pre>";
-        var_dump($aStatus);
-        return json_decode($output, true);
-    }
-
-
-    public function FormatHeader($url, $useragent)
-    {
-        // 解析url
-        $temp = parse_url($url);
-        $query = isset($temp['query']) ? $temp['query'] : '';
-        $path = isset($temp['path']) ? $temp['path'] : '/';
-        $header = array(
-            "POST {$path}?{$query} HTTP/1.1",
-            "Host: {$temp['host']}",
-            "Referer: http://{$temp['host']}/",
-            "Content-Type: text/xml; charset=utf-8",
-            'Accept: application/json, text/javascript, */*; q=0.01',
-            'Accept-Encoding:gzip, deflate, br',
-            'Accept-Language:zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-            'Connection:keep-alive',
-            'X-Requested-With: XMLHttpRequest',
-            'User-Agent: ' . $useragent,
-        );
-        return $header;
-
     }
 
     /**
@@ -287,9 +191,8 @@ class Baiduzd extends Controller
         }
     }
 
-
     /**
-     * 删除系统任务
+     * 删除
      * @auth true  # 表示需要验证权限
      * @menu true  # 添加系统菜单节点
      * @login true # 强制登录才可访问
@@ -321,5 +224,64 @@ class Baiduzd extends Controller
             $this->success('保存成功！', 'javascript:history.back()');
         }
     }
+
+    public function Baidu()
+    {
+        $data=['uid'=>session('user.id')];
+        $this->_queue('百度问题采集', "xsem:GetBaiduTask", 1, $data, 0);
+    }
+
+    protected function getParams($url)
+    {
+        $refer_url = parse_url($url);
+        $params = $refer_url['query'];
+        $arr = array();
+        if (!empty($params)) {
+            $paramsArr = explode('&', $params);
+            foreach ($paramsArr as $k => $v) {
+                $a = explode('=', $v);
+                $arr[$a[0]] = $a[1];
+            }
+        }
+        return $arr;
+    }
+
+
+    public function Cjbaidu()
+    {
+        $this->title = '采集连接';
+        WordBaiduurl::mQuery()->where(['is_deleted' => 0, 'uid' => session('user.id')])->order('id desc')->page();
+    }
+
+    public function addCj()
+    {
+        WordBaiduurl::mForm('addCj');
+    }
+
+    public function cjedit()
+    {
+        WordBaiduurl::mForm('addCj');
+    }
+
+    public function cjremove()
+    {
+        WordBaiduurl::mDelete();
+    }
+
+    /**
+     * 修改通知状态
+     * @auth true  # 表示需要验证权限
+     * @menu true  # 添加系统菜单节点
+     * @login true # 强制登录才可访问
+     */
+
+    public function cjstate()
+    {
+        WordBaiduurl::mSave($this->_vali([
+            'status.in:0,1' => '状态值范围异常！',
+            'status.require' => '状态值不能为空！',
+        ]));
+    }
+
 
 }

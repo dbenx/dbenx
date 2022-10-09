@@ -40,13 +40,13 @@ class ParticipleService extends Service
     public function total()
     {
         $this->total = ['pid' => 0, 'unit' => 0, 'noall' => 0, 'all' => 0, 'jhnum' => 0, 'unitnum' => 0];
-        $this->total['allkeywords'] = SemKeywords::mk()->where(['uid' => session('user.id')])->count('id');
-        $this->total['pid'] = SemKeywords::mk()->where(['uid' => session('user.id'), 'pid' => 0])->count('id');
+        $this->total['allkeywords'] = SemKeywords::mk()->where(['uid' => session('user.id')])->count('*');
+        $this->total['pid'] = SemKeywords::mk()->where(['uid' => session('user.id'), 'pid' => 0])->count('*');
         $this->total['unit'] = SemKeywords::mk()->where(['uid' => session('user.id'), 'unitid' => 0])->where('pid', '<>', 0)->count('id');
-        $this->total['noall'] = SemKeywords::mk()->where(['uid' => session('user.id'), 'pid' => 0, 'unitid' => 0])->count('id');
-        $this->total['all'] = SemKeywords::mk()->where(['uid' => session('user.id')])->where('pid', '<>', 0)->where('unitid', '<>', 0)->count('id');
-        $this->total['jhnum'] = SemKeywords::mk()->field('pid,count(1) total')->where(['uid' => session('user.id')])->where('pid', '<>', 0)->group('pid')->count('pid');
-        $this->total['unitnum'] = SemKeywords::mk()->field('unitid,count(1) total')->where(['uid' => session('user.id')])->where('pid', '<>', 0)->group('unitid')->count('unitid');
+        $this->total['noall'] = SemKeywords::mk()->where(['uid' => session('user.id'), 'pid' => 0, 'unitid' => 0])->count('*');
+        $this->total['all'] = SemKeywords::mk()->where(['uid' => session('user.id')])->where('pid', '<>', 0)->where('unitid', '<>', 0)->count('*');
+        $this->total['jhnum'] = SemKeywords::mk()->field('pid,count(1) total')->where(['uid' => session('user.id')])->where('pid', '<>', 0)->group('pid')->count('*');
+        $this->total['unitnum'] = SemKeywords::mk()->field('unitid,count(1) total')->where(['uid' => session('user.id')])->where('pid', '<>', 0)->group('unitid')->count('*');
 
         return $this->total;
     }

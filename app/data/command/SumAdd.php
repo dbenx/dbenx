@@ -19,12 +19,12 @@ class SumAdd extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $dd=$this->queue->data;
-        $this->setQueueSuccess($dd['uuid']);
+     //   $dd=$this->queue->data;
+      //  $this->setQueueSuccess($dd['uuid']);
         //$this->setQueueSuccess("此次共处理1个刷新操作, 其中有1个失败。");
-        [$uuid, $puid] = [$input->getArgument('uuid'), $input->getArgument('puid')];
-        if (empty($uuid)) $this->setQueueError("参数UID无效，请传入正确的参数!");
-        if (empty($puid)) $this->setQueueError("参数PID无效，请传入正确的参数!");
+     //   [$uuid, $puid] = [$input->getArgument('uuid'), $input->getArgument('puid')];
+     //   if (empty($uuid)) $this->setQueueError("参数UID无效，请传入正确的参数!");
+       // if (empty($puid)) $this->setQueueError("参数PID无效，请传入正确的参数!");
 
         $arr = array(
             130,131,132,133,134,135,136,137,138,139,
@@ -35,22 +35,36 @@ class SumAdd extends Command
         );
 
         $phonenum = $arr[array_rand($arr)].mt_rand(1000,9999).mt_rand(1000,9999);
-
        // [$count, $total] = [0, ($result = DataGd::mk()->where($map)->select())->count()];
        // $data[] = [ 'phone'=>$phonenum];
      //   $rs=DataFrom::mk()->insertall($data);
       //  [$count, $total] = [0, $rs];
 
-        $url='http://192.168.2.77/plus/baoming.php';
+        $url='http://127.0.0.1:315/push/receiveBodyRecord';
         $data=array(
-            "name"=>'aa',
-            'phone'=>$phonenum
+            "nickName"=>'aa',
+            'mobile'=>$phonenum
         );
-        http_post($url,$data);
-
+       // http_post($url,$data);
+        $dd=$this->postcurl($data,$url);
         $this->queue->message(1, 1, "当前自加10", 1);
-        $this->setQueueSuccess("此次共处理1个刷新操作, 其中有1个失败。");
+        $this->setQueueSuccess($dd);
 
+    }
+
+    protected  function postcurl($data,$url){
+        $data = json_encode($data);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Content-type: application/json;charset='utf-8'",
+                'Content-Length: ' . strlen($data))
+        );
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
     }
 
 }

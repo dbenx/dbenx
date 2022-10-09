@@ -6,11 +6,11 @@ use app\sem\model\SemKeywords;
 use app\sem\model\SemKeywordsConfig;
 use app\sem\model\SemRegionConfig;
 use app\sem\model\SemUnitConfig;
-use app\sem\model\SemUrlsuffixConfig;
 use app\sem\service\ParticipleService;
+use app\sem\service\XlsToolsService;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use think\admin\Controller;
 use think\admin\helper\QueryHelper;
-use \PhpOffice\PhpSpreadsheet\IOFactory;
 
 /**
  * 分词工具
@@ -43,6 +43,7 @@ class Participle extends Controller
             elseif ($this->type === 'all') $query->where('pid', '<>', 0)->where('unitid', '<>', 0);
             // 数据列表搜索过滤
             $query->where(['deleted' => 0, 'uid' => session('user.id')]);
+            // $query->where('id','<',6666);
             $query->field('id,uid,pid,unitid,regionid,keywords');
             $query->like('keywords');
             $query->order("unitid asc,pid asc,regionid desc,id");
@@ -69,11 +70,11 @@ class Participle extends Controller
 
         //var_dump($SemKeywordsConfig);
         foreach ($data as &$vo) {
-           // echo $vo['pid'];
+            // echo $vo['pid'];
             if ($vo['pid'] != 0) {
-                $vo['plankw'] =$SemKeywordsConfig[$vo['pid']]['rootword'];
-                $vo['planmatch'] =$SemKeywordsConfig[$vo['pid']]['match'];
-                $vo['pid'] =$SemKeywordsConfig[$vo['pid']]['title'];
+                $vo['plankw'] = $SemKeywordsConfig[$vo['pid']]['rootword'];
+                $vo['planmatch'] = $SemKeywordsConfig[$vo['pid']]['match'];
+                $vo['pid'] = $SemKeywordsConfig[$vo['pid']]['title'];
             }
 
             if ($vo['unitid'] != 0) {
@@ -135,7 +136,9 @@ class Participle extends Controller
             SemKeywords::mk()->where('id', '>', 0)->delete();
             $this->error($exception->getMessage());
         }
+
         $num = SemKeywords::mk()->insertAll($rs);
+
         $this->success('导入成功' . $num . '条');
     }
 
@@ -157,7 +160,15 @@ class Participle extends Controller
     }
 
 
-
+    /**
+     * 导出大数据
+     * @menu true  # 添加系统菜单节点
+     * @login true # 强制登录才可访问
+     */
+    public function exportbig()
+    {
+       XlsToolsService::instance()->ExportBigXls();
+    }
 
     /**
      * 列表数据处理
@@ -168,7 +179,8 @@ class Participle extends Controller
     protected function _export_page_filter(array &$data)
     {
         [$SemKeywordsConfig, $SemUnitConfig, $SemRegionConfig] = [[], [], []];
-        foreach (SemKeywordsConfig::mk()->whereor(['uid' => session('user.id'), 'status' => 1])->column('id,title') as $val) {
+        //SemKeywordsConfig::mk()->whereor(['uid' => session('user.id'), 'status' => 1])->column('id,title')
+        foreach (SemKeywordsConfig::mk()->column('id,title') as $val) {
             $SemKeywordsConfig[$val['id']] = $val['title'];
         }
         foreach (SemUnitConfig::mk()->whereor(['uid' => session('user.id'), 'status' => 1])->column('id,title') as $val) {
@@ -178,6 +190,7 @@ class Participle extends Controller
             $SemRegionConfig[$val['id']] = $val['title'];
         }
 
+        //var_dump();
         foreach ($data as &$vo) {
             if ($vo['pid'] != 0) {
                 $vo['pid'] = $SemKeywordsConfig[$vo['pid']];

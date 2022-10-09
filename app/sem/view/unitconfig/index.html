@@ -1,4 +1,4 @@
-{extend name="../../admin/view/main"}
+{extend name="../../admin/view/table"}
 {block name="button"}
 <!--{if auth("add")}-->
 <button data-modal='{:url("add")}' data-title="添加" class='layui-btn layui-btn-sm layui-btn-primary'>添加单元</button>
@@ -35,11 +35,10 @@
         const tableTree = layui.tableTreeDj;
         const $ = layui.$;
         const cols = [[
-            {toolbar: '#toolbar', title: '操作面板', minWidth: 260, align: 'center', fixed: 'right'}
-            , {type: 'checkbox', sort: true}
+            {toolbar: '#toolbar', title: '操作面板', minWidth: 260, align: 'center', fixed: 'left'}
             , {field: 'id', title: 'ID', width: 100, align: "center"}
-            , {field: 'sort', title: '排序权重', width: 120, align: 'center', templet: '#SortInputTpl'}
-            , {field: 'title', minWidth: 300, title: '单元结构'}
+            , {field: 'sort', title: '排序权重', width: 80, align: 'center', templet: '#SortInputTpl'}
+            , {field: 'title', minWidth: 260, title: '单元结构'}
             , {
                 field: 'match', title: '匹配模式', width: 100, align: 'center'
                 , templet: function (d) {
@@ -62,6 +61,7 @@
             }
             , {field: 'rootword', title: '词根', width: 500}
             ,{field: 'status', title: '是否公开', align: 'center', minWidth: 110, templet: '#StatusSwitchTpl'}
+            , {field: 'nickname', title: '创建人', width: 110,align: 'center'}
             ,{field: 'export', title: '导出', align: 'center', width: 105, templet: '#export'}
         ]]
 
@@ -203,6 +203,7 @@
     <!--{if auth("remove")}-->
         <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要永久删除此规则吗？" data-action="{:url('remove')}" data-value="id#{{d.id}}">删 除</a>
     <!--{/if}-->
+
 </script>
 
 {/block}

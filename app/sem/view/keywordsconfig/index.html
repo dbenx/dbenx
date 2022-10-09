@@ -1,4 +1,4 @@
-{extend name="../../admin/view/main"}
+{extend name="../../admin/view/table"}
 {block name="button"}
 <!--{if auth("add")}-->
 <button data-modal='{:url("add")}' data-title="添加" class='layui-btn layui-btn-sm layui-btn-primary'>添加账户</button>
@@ -31,7 +31,6 @@
         const $ = layui.$;
         const cols = [[
              {toolbar: '#toolbar', title: '操作面板', minWidth: 200, align: 'center', fixed: 'left'}
-            ,{type: 'checkbox', sort: true}
             , {field: 'id', title: 'ID', width: 80, align: "center"}
             , {field: 'sort', title: '排序权重', width: 120, align: 'center', templet: '#SortInputTpl'}
             , {field: 'title', minWidth: 310, title: '账户计划结构'}
@@ -55,8 +54,9 @@
                     }
                 }
             }
-            , {field: 'rootword', title: '词根', width: 500}
+            ,{field: 'rootword', title: '词根', width: 400}
             ,{field: 'status', title: '是否公开', align: 'center', minWidth: 110, templet: '#StatusSwitchTpl'}
+            ,{field: 'nickname', title: '创建人', width: 100, align: 'center' }
             ,{field: 'export', title: '导出', align: 'center', width: 105, templet: '#export'}
         ]]
 

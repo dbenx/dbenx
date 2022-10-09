@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>深圳新东方职教专业评测系统</title>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+
+{block name='style'}
+<style>
+    body{
+        background: url("/static/pc/img_bg2.png");
+        background-size:cover;
+        font-size: 12px;
+    }
+    .sr label{ line-height: 30px;}
+    .main {
+        width: 1100px;
+        margin: 0px auto;
+        margin-top: 50px;
+        box-shadow: 10px 10px 5px #ccc;
+        border-radius: 20px;
+        background: #f1f3ee;
+        padding: 50px;
+    }
+
+    .main h1 {
+        text-align: center;
+        color: #56c4da;
+        font-size: 30px;
+        font-weight: normal;
+        line-height: 100px;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .fist input {
+        outline-style: none;
+        border: 1px solid #c0c4cc;
+        border-radius: 5px;
+        width: 100%;
+        height: 100%;
+        padding: 2px 5px;
+        box-sizing: border-box;
+    }
+
+    .send button{
+        outline-style: none;
+        border: 1px solid #c0c4cc;
+        border-radius: 5px;
+        width: 200px;
+        height: 50px;
+        padding: 2px 5px;
+        box-sizing: border-box;
+        margin: 0px auto;
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        background: #56c4da;
+    }
+    .sr label {
+        width: 50px;
+    }
+
+    .fist {
+        justify-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+    .select {
+        width: 100%;
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+        padding: 0;
+        overflow: hidden;
+        background-color: #fff;
+        color: #555;
+        border: 1px solid #aaa;
+        text-shadow: none;
+        border-radius: 4px;
+        transition: box-shadow 0.25s ease;
+        z-index: 2;
+    }
+</style>
+{/block}
+{block name='body'}
+<div class="main">
+    <h1>深圳新东方职教专业评测系统</h1>
+    <form action="{:request()->url()}" autocomplete="off" class="layui-form layui-card" data-auto="true" method="post">
+        <div class="flex fist">
+            <div class="flex sr">
+                <label>姓名</label>
+                <input type="text" name="name" placeholder="请输入姓名" required>
+            </div>
+            <div class="flex sr" style="width: 25%">
+                <label> 性别</label>
+                <select class="select" id="sex" name="sex">
+                    <option value="">请选择性别</option>
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </div>
+            <div class="flex sr">
+                <label> 年龄</label>
+                <select class="select" id="age" name="age">
+                    <option value="">请选择年龄</option>
+                    <option value="年龄13-15周岁">年龄13-15周岁</option>
+                    <option value="年龄16-18周岁">年龄16-18周岁</option>
+                </select>
+            </div>
+            <div class="flex sr">
+                <label style="width: 80px;">就读中学</label>
+                <input type="text"  placeholder="请输入就读中学">
+            </div>
+        </div>
+        <div class="flex fist">
+            <div class="flex sr" style="width: 20%">
+                <label style="width: 80px;">户口类型</label>
+                <select name="sex" class="select">
+                    <option selected hidden disabled value="">点击选择户口类型</option>
+                    <option value="volvo">居民户口</option>
+                    <option value="saab">农业户口</option>
+                </select>
+            </div>
+            <div class="flex sr" style="width: 77%">
+                <label style="width: 80px;">家庭地址</label>
+                <input type="text"  placeholder="请输入家庭地址">
+            </div>
+        </div>
+
+        <div class="flex fist">
+            <div class="flex sr" style="width: 30%">
+                <label style="width: 200px; height: 30px;">最后一次中考试成绩</label>
+                <select class="select" id="lastResults" name="lastResults">
+                    <option value="">请选择考试成绩分数段</option>
+                    <option value="500分以上">500分以上</option>
+                    <option value="400分-500分">400分-500分</option>
+                    <option value="300分-400分">300分-400分</option>
+                    <option value="200分-300分">200分-300分</option>
+                    <option value="100分-200分">100分-200分</option>
+                    <option value="100分以下">100分以下</option>
+                </select>
+            </div>
+            <div class="flex sr" style="width: 30%">
+                <label style="width: 150px; height: 30px;">中考预估分数</label>
+                <select class="select" id="highExamForecastScore" name="highExamForecastScore">
+                    <option value="">请选择中考预估分数段</option>
+                    <option value="500分以上">500分以上</option>
+                    <option value="400分-500分">400分-500分</option>
+                    <option value="300分-400分">300分-400分</option>
+                    <option value="200分-300分">200分-300分</option>
+                    <option value="100分-200分">100分-200分</option>
+                    <option value="100分以下">100分以下</option>
+                </select>
+            </div>
+            <div class="flex sr" style="width: 30%">
+                <label style="width: 150px; height: 30px;">成绩证明人</label>
+                <input type="text" class="select" id="referenceOfGrades" name="referenceOfGrades" placeholder="请输入成绩证明人">
+            </div>
+        </div>
+
+        <div class="flex fist">
+            <div class="flex sr" style="width: 50%">
+                <label style="width: 150px; height: 30px;">证明人联系方式</label>
+                <input type="text" class="select" id="referenceOfGradesPhone" name="referenceOfGradesPhone" placeholder="请输入证明人联系方式">
+            </div>
+            <div class="flex sr" style="width: 40%">
+                <label style="width: 150px; height: 30px;">学籍是否在初中学校</label>
+                <select class="select" id="studentStatusInHighSchool" name="studentStatusInHighSchool">
+                    <option value="">请选择学籍是否在初中学校</option>
+                    <option value="是">是</option>
+                    <option value="否">否</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex fist">
+            <div class="flex sr" style="width: 100%">
+                <label style="width: 150px; height: 30px;">家庭主要成员联系方式</label>
+                <input type="text" class="select" id="familyPhone" name="familyPhone" placeholder="例如：爸爸13888888888">
+            </div>
+        </div>
+        <div class="flex fist">
+            <div class="flex sr" style="width: 40%">
+                <label style="width: 100px; height: 30px;margin-right: 60px;">喜欢的专业</label>
+                <select class="select" id="favoriteMajor" name="favoriteMajor">
+                    <option value="">请选择喜欢的专业</option>
+                    <option value="中餐">中餐</option>
+                    <option value="西点">西点</option>
+                    <option value="西餐">西餐</option>
+                </select>
+            </div>
+            <div class="flex sr" style="width: 40%">
+                <label style="width: 150px; height: 30px; ">选择学习的原因</label>
+                <select class="select" id="reasonsLearning" name="reasonsLearning">
+                    <option value="">请选择学习的原因</option>
+                    <option value="个人兴趣爱好">个人兴趣爱好</option>
+                    <option value="成绩不佳，选择职业学校">成绩不佳，选择职业学校</option>
+                    <option value="打算学习一门技术">打算学习一门技术</option>
+                    <option value="父母要求学习">父母建议来学习</option>
+                    <option value="打发闲暇时间">餐饮行业前景好</option>
+                    <option value="打算创业开店">打算创业开店</option>
+                    <option value="想高薪就业">想高薪就业</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex fist">
+            <div class="flex sr" style="width: 30%">
+                <label style="width: 100px; height: 30px;margin-right: 60px;">兴趣爱好</label>
+                <select class="select" id="hobbies" name="hobbies">
+                    <option value="">请选择您的兴趣爱好</option>
+                    <option value="做蛋糕/面包/西点">做蛋糕/面包/西点</option>
+                    <option value="炒菜/做饭/烹饪">炒菜/做饭/烹饪</option>
+                    <option value="篮球/足球/运动">篮球/足球/运动</option>
+                    <option value="旅游/娱乐/健身">旅游/娱乐/健身</option>
+                    <option value="打游戏/网游/手游">打游戏/网游/手游</option>
+                    <option value="汽车/摩托车/改装">汽车/摩托车/改装</option>
+                    <option value="唱歌/跳舞/音乐">唱歌/跳舞/音乐</option>
+                    <option value="看书/阅读/小说">看书/阅读/小说</option>
+                    <option value="社交/聊天">社交/聊天</option>
+
+                </select>
+            </div>
+            <div class="flex sr" style="width: 30%">
+                <label style="width: 100px; height: 30px; ">自我评价</label>
+                <select class="select" id="selfAssessment" name="selfAssessment">
+                    <option value="">请选择您的自我评价</option>
+                    <option value="外向/随和/乐观">外向/随和/乐观</option>
+                    <option value="内向/富有爱心">内向/富有爱心</option>
+                    <option value="热情/有想象力/忠诚">热情/有想象力/忠诚</option>
+                    <option value="热心/高度责任感">热心/高度责任感</option>
+                    <option value="果断/有主见">果断/有主见</option>
+                    <option value="坦率/果断/领导力">坦率/果断/领导力</option>
+                    <option value="灵活/创造性">灵活/创造性</option>
+                    <option value="冷静/严肃">冷静/严肃</option>
+                    <option value="其他类型">其他类型</option>
+                </select>
+            </div>
+            <div class="flex sr" style="width: 30%">
+            <label class="col-sm-2 control-label" style="width: 100px;">接待教师姓名</label>
+            <div class="col-sm-2">
+                <input type="text" class="select" id="teachername" name="teachername" placeholder="接待教师姓名">
+            </div>
+            </div>
+        </div>
+        <div class="flex send">
+            <button class="layui-btn" type='submit'>提交</button>
+        </div>
+    </form>
+</div>
+<script src="__ROOT__/static/admin.js"></script>
+{/block}
