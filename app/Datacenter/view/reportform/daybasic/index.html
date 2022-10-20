@@ -41,8 +41,11 @@
 <script>
     $(function () {
         $('#DataDayBasic').layTable({
+
             even: true, height: 'full',
             sort: {field: 'id', type: 'desc'},
+            toolbar: true,
+            defaultToolbar: ['filter', 'exports', 'print'],
             cols: [
                 [
                     {rowspan: 2,toolbar: '#toolbar', align: 'center',minWidth: 180,title: '时间 星期', fixed: 'left'},
@@ -62,12 +65,10 @@
                     {title: '咨询', field: 'consulting',minWidth: 100,align: 'center',edit: 'text'},
                     {title: '名片', field: 'information',minWidth: 100,align: 'center',edit: 'text'},
 
-
                     {title: '长期', field: 'cqinformation',minWidth: 100,align: 'center',edit: 'text'},
                     {title: '短期', field: 'dqinformation',minWidth: 100,align: 'center',edit: 'text'},
                     {title: '单品', field: 'dpinformation',minWidth: 100,align: 'center',edit: 'text'},
                     {title: '信息汇总', field: 'provence',minWidth: 100,align: 'center'},
-
 
                     {title: 'cpc', field: 'consulting',minWidth: 100,align: 'center'},
                     {title: '咨询成本', field: 'information',minWidth: 100,align: 'center'},
@@ -118,7 +119,6 @@
                 ,data = obj.data //得到所在行所有键值
                 ,field = obj.field; //得到字段
           //  layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改值为：'+ util.escape(value));
-
             var xhr = new XMLHttpRequest();
             xhr.open('post', "{:url('up')}", true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

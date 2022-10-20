@@ -1,7 +1,5 @@
 <?php
-
 namespace app\sem\controller;
-
 use app\sem\model\SemKeywords;
 use app\sem\model\SemKeywordsConfig;
 use app\sem\model\SemRegionConfig;
@@ -47,7 +45,6 @@ class Participle extends Controller
             $query->field('id,uid,pid,unitid,regionid,keywords');
             $query->like('keywords');
             $query->order("unitid asc,pid asc,regionid desc,id");
-
         });
     }
 
@@ -60,14 +57,12 @@ class Participle extends Controller
         foreach (SemKeywordsConfig::mk()->where('pid', '<>', 0)->whereor(['uid' => session('user.id'), 'status' => 1])->column('id,rootword,match,title') as $val) {
             $SemKeywordsConfig[$val['id']] = array('rootword' => $val['rootword'], 'match' => $val['match'], 'title' => $val['title']);
         }
-
         foreach (SemUnitConfig::mk()->where('pid', '<>', 0)->whereor(['uid' => session('user.id'), 'status' => 1])->column('id,rootword,match,title') as $val) {
             $SemUnitConfig[$val['id']] = array('rootword' => $val['rootword'], 'match' => $val['match'], 'title' => $val['title']);
         }
         foreach (SemRegionConfig::mk()->whereor(['uid' => session('user.id'), 'status' => 1])->column('id,regionalwords,title') as $val) {
             $SemRegionConfig[$val['id']] = array('regionalwords' => $val['regionalwords'], 'title' => $val['title']);
         }
-
         //var_dump($SemKeywordsConfig);
         foreach ($data as &$vo) {
             // echo $vo['pid'];
@@ -76,13 +71,11 @@ class Participle extends Controller
                 $vo['planmatch'] = $SemKeywordsConfig[$vo['pid']]['match'];
                 $vo['pid'] = $SemKeywordsConfig[$vo['pid']]['title'];
             }
-
             if ($vo['unitid'] != 0) {
                 $vo['unitkw'] = $SemUnitConfig[$vo['unitid']]['rootword'];
                 $vo['unitmatch'] = $SemUnitConfig[$vo['unitid']]['match'];
                 $vo['unitid'] = $SemUnitConfig[$vo['unitid']]['title'];
             }
-
             if ($vo['regionid'] != 0) {
                 $vo['regionkw'] = $SemRegionConfig[$vo['regionid']]['regionalwords'];
                 $vo['regionid'] = $SemRegionConfig[$vo['regionid']]['title'];
@@ -115,7 +108,7 @@ class Participle extends Controller
 
         for ($currentColumn = 'A'; $currentColumn != $allColumn; $currentColumn++) {
             for ($currentRow = 0; $currentRow <= $allRow; $currentRow++) {
-                //数据坐标
+                //数据坐标 拿得起放不下的 只有手中的筷子
                 $address = $currentColumn . $currentRow;
                 //读取到的数据，保存到数组$data中
                 $cell = $sheet->getCell($address)->getValue();
@@ -136,9 +129,8 @@ class Participle extends Controller
             SemKeywords::mk()->where('id', '>', 0)->delete();
             $this->error($exception->getMessage());
         }
-
+        unlink($file);//因为之前使用的是上传的文件进行操作，这里把它删除，看个人情况具体处理
         $num = SemKeywords::mk()->insertAll($rs);
-
         $this->success('导入成功' . $num . '条');
     }
 
