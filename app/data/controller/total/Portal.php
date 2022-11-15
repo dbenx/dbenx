@@ -35,7 +35,7 @@ class Portal extends Controller
                 $date = date('Y-m-d', strtotime("-{$i}days"));
                 $this->days[] = [
                     '当天日期' => date('m-d', strtotime("-{$i}days")),
-                    '增加用户' => DataUser::mk()->whereLike('create_at', "{$date}%")->count(),
+                    '工单排行' => DataUser::mk()->whereLike('create_at', "{$date}%")->count(),
                     '订单数量' => ShopOrder::mk()->whereLike('create_at', "{$date}%")->whereRaw('status>=4')->count(),
                     '订单金额' => ShopOrder::mk()->whereLike('create_at', "{$date}%")->whereRaw('status>=4')->sum('amount_total'),
                     '返利金额' => DataUserRebate::mk()->whereLike('create_at', "{$date}%")->sum('amount'),

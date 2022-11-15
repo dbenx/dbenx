@@ -1,10 +1,11 @@
 <?php
+
 namespace app\work\controller;
+use app\work\model\WordOrder;
 use app\work\service\WordOrderService;
 use think\admin\Controller;
-use app\work\model\WordOrder;
-use think\admin\model\SystemUser;
 use think\admin\helper\QueryHelper;
+use think\admin\model\SystemUser;
 
 /**
  * 工单列表
@@ -294,10 +295,49 @@ class Order extends Controller
 
             } catch (\Exception $exception) {
 
-
             }
-
         }
+    }
+
+    /**
+     * 工单统计
+     * @auth true  # 表示需要验证权限
+     * @menu true  # 添加系统菜单节点
+     * @login true # 强制登录才可访问
+     */
+    public function portal()
+    {
+        foreach (SystemUser::mk()->column('id,nickname') as $val) {
+            $username[$val['id']] =$val['nickname'];
+        }
+       // var_dump($username);
+        $this->allorder = WordOrder::mk()->where(['deleted' => 0])->count('*');
+        $this->endorder = WordOrder::mk()->where(['deleted' => 0,'status' => 1])->count('*');
+        $this->nendorder=$this->allorder- $this->endorder;
+        $this->now = date('Y-m-d h:i:s', time());
+        $this->csorder = WordOrder::mk()->where(['deleted' => 0, 'finishtime' => Null])->where('endtime', '<', $this->now)->field('id')->count();
+
+        $this->tjname=WordOrder::mk()->field('count(id) as value,tjname as name')->group('tjname')->select()->toArray();
+
+        $this->zzname=WordOrder::mk()->field('count(id) as value,zzname as name')->group('zzname')->select()->toArray();
+        $this->wwcname=WordOrder::mk()->field('count(id) as value,zzname as name')->where(['status'=>1])->group('zzname')->select()->toArray();
+
+        foreach ($this->tjname as $key=>$value){
+            $this->tjname[$key]['name']=$username[$value['name']];
+        }
+        foreach ($this->zzname as $key=>$value){
+             $this->zzname[$key]['name']=$username[$value['name']];
+        }
+
+        for ($i = 30; $i >= 0; $i--) {
+            $date = date('Y-m-d', strtotime("-{$i}days"));
+            $this->days[] = [
+                '当天日期' => date('m-d', strtotime("-{$i}days")),
+                '新提交工单' => WordOrder::mk()->whereLike('create_at', "{$date}%")->where(['deleted'=>0])->count(),
+                '已完成工单' => WordOrder::mk()->whereLike('finishtime', "{$date}%")->where(['deleted'=>0,'status'=>1])->count(),
+            ];
+        }
+        $this->fetch();
     }
 
 

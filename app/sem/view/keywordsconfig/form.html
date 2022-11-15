@@ -4,7 +4,8 @@
             <label class="layui-form-label label-required-next">上级名称</label>
             <div class="layui-input-block">
                 <select name='pid' class='layui-select' lay-search>
-                    {foreach $menus as $menu}{eq name='menu.id' value='$vo.pid|default=0'}
+                    {foreach $menus as $menu}
+                    {eq name='menu.id' value='$vo.pid|default=0'}
                     <option selected value='{$menu.id}'>{$menu.spl|raw}{$menu.title}</option>
                     {else}
                     <option value='{$menu.id}'>{$menu.spl|raw}{$menu.title}</option>
@@ -21,9 +22,6 @@
                 <p class="help-block"><b>必选</b>，请填写名称（如：品牌，专业），建议字符不要太长，一般4-6个汉字</p>
             </div>
         </div>
-
-
-
 
         <div class="layui-form-item">
             <label class="layui-form-label">匹配规则</label>
